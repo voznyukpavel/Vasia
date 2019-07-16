@@ -32,7 +32,7 @@ public class SWTSimple extends ApplicationWindow{
 		 MenuManager menuManager =new MenuManager();
 		 MenuManager fileMenu =new MenuManager("&File");
 		 menuManager.add(fileMenu);
-		 final Menu menu = menuManager.createContextMenu();
+		
 		 
 	//	getShell().setMenuBar(menuManager);
 		getShell().setText("Jface Homework log");
