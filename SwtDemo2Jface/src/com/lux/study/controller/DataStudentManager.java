@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import com.lux.study.model.DataStudent;
 import com.lux.study.ui.DataAction;
 
-public class DataManager  {
+public class DataStudentManager  {
 
 	private ArrayList<DataStudentObserver> observers;
 	private DataStudent dataStudent;
 	private DataAction action;
 	private DataStudent buffer;
 
-	public DataManager() {
+	public DataStudentManager() {
 		observers = new ArrayList<DataStudentObserver>();
 	}
 

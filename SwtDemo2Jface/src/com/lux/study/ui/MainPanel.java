@@ -8,7 +8,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
-import com.lux.study.controller.DataManager;
+import com.lux.study.controller.DataStudentManager;
+import com.lux.study.controller.DataTableManager;
 
 
 public class MainPanel extends ApplicationWindow {
@@ -16,12 +17,13 @@ public class MainPanel extends ApplicationWindow {
 	private SashForm sashForm;
 	private TablePanel tablePanel;
 	private ActionPanel actionPanel;
-	private DataManager dataManager;
-
+	private DataStudentManager dataManager;
+	private DataTableManager dataTableManager;
 
 	public MainPanel() {
 		super(null);
-		dataManager=new DataManager();
+		dataManager=new DataStudentManager();
+		dataTableManager= new DataTableManager();
 	}
 
 	protected Control createContents(Composite parent) {
@@ -29,8 +31,8 @@ public class MainPanel extends ApplicationWindow {
 		sashForm = new SashForm(parent, SWT.HORIZONTAL| SWT.SMOOTH);
 		
 		
-		tablePanel= new TablePanel(this,sashForm,dataManager);
-		actionPanel= new ActionPanel(this,sashForm,dataManager);
+		tablePanel= new TablePanel(this,sashForm,dataManager,dataTableManager);
+		actionPanel= new ActionPanel(this,sashForm,dataManager,dataTableManager);
 		
 		shellSets();
 		return parent;

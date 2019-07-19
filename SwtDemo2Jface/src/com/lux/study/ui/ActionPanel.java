@@ -14,12 +14,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import com.lux.study.controller.DataManager;
+import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.DataStudentObserver;
+import com.lux.study.controller.DataTableManager;
+import com.lux.study.controller.DataTableObserver;
 import com.lux.study.model.DataStudent;
 import com.lux.study.util.TextChecker;
 
-public class ActionPanel implements DataStudentObserver {
+public class ActionPanel implements DataTableObserver {
 
 	private static final String NAME = "Name";
 	private static final String GROUP = "Group";
@@ -30,12 +32,13 @@ public class ActionPanel implements DataStudentObserver {
 	private Label nameLabelTitle, groupLabelTitel, taskSWTStatusLabel;
 	private Text nameTextValue, groupTextValue;
 	private Button taskSWTStatusCheckBox, newButton, saveButton, deleteButton, cancelButton;
-	private DataManager dataManager;
+	private DataStudentManager dataManager;
+	private DataTableManager dataTableManager;
 	private DataStudent dataStudent;
 	private MainPanel mainwindow;
 
-	public ActionPanel(MainPanel mainwindow, SashForm sashForm, DataManager dataManager) {
-
+	public ActionPanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,DataTableManager dataTableManager) {
+		this.dataTableManager=dataTableManager;
 		this.dataManager = dataManager;
 		this.mainwindow = mainwindow;
 		this.sashForm = sashForm;
@@ -46,7 +49,7 @@ public class ActionPanel implements DataStudentObserver {
 	}
 
 	@Override
-	public void update(DataStudent dataStudent, DataAction action) {
+	public void update(DataStudent dataStudent) {
 		setDataStudents(dataStudent);
 
 	}
@@ -59,7 +62,7 @@ public class ActionPanel implements DataStudentObserver {
 	}
 
 	private void sighnUp() {
-		dataManager.registerObserver(this);
+		dataTableManager.registerObserver(this);
 	}
 
 	private void initUI() {
@@ -225,4 +228,6 @@ public class ActionPanel implements DataStudentObserver {
 
 		}
 	}
+
+
 }

@@ -10,7 +10,7 @@ import com.lux.study.model.StudentsComparator;
 public class DataStorage // implements DataStudentObserver
 {
 	private static List<DataStudent> entries = new LinkedList<DataStudent>();
-	static StudentsComparator comparator= new StudentsComparator();
+	//static StudentsComparator comparator= new StudentsComparator();
 
 	private DataStorage() {
 
@@ -18,7 +18,7 @@ public class DataStorage // implements DataStudentObserver
 
 	public static void addData(DataStudent dataStudent) {
 		entries.add(dataStudent);
-		Collections.sort(entries, comparator);
+		//Collections.sort(entries, comparator);
 	}
 
 	public static List<DataStudent> getData() {

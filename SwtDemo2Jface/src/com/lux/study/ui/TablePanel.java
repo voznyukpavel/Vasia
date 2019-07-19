@@ -29,9 +29,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-import com.lux.study.controller.DataManager;
+import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.DataStorage;
 import com.lux.study.controller.DataStudentObserver;
+import com.lux.study.controller.DataTableManager;
 import com.lux.study.model.DataStudent;
 
 public class TablePanel implements DataStudentObserver {
@@ -45,16 +46,18 @@ public class TablePanel implements DataStudentObserver {
 	private Composite tableComposite;
 	private TableViewer tableViever;
 	private TableLayout tableLayout;
-	private DataManager dataManager;
+	private DataStudentManager dataManager;
+	private DataTableManager dataTableManager;
 	private DataStudent dataStudent;
 	private MainPanel mainwindow;
 	private Table table;
-	private DataStorage dataStorage;
 
-	public TablePanel(MainPanel mainwindow, SashForm sashForm, DataManager dataManager) {
+
+	public TablePanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,DataTableManager dataTableManager) {
 		super();
 		this.mainwindow = mainwindow;
 		this.dataManager = dataManager;
+		this.dataTableManager=dataTableManager;
 		this.sashForm = sashForm;
 		//entries = new LinkedList();
 	//	dataStorage=new DataStorage(dataManager);
@@ -146,7 +149,7 @@ public class TablePanel implements DataStudentObserver {
 		IStructuredSelection selection = (IStructuredSelection) tableViever.getSelection();
 		Object selections = selection.getFirstElement();
 		if (selections != null) {
-			//dataManager.setFields((DataStudent) selections);
+			dataTableManager.setData((DataStudent)selections);
 		}
 	}
 

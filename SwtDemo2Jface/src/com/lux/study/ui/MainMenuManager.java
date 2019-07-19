@@ -3,7 +3,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.ApplicationWindow;
-import com.lux.study.controller.DataManager;
+import com.lux.study.controller.DataStudentManager;
 
 public class MainMenuManager  extends MenuManager {
 
@@ -11,10 +11,10 @@ public class MainMenuManager  extends MenuManager {
 	private MenuManager editMenu;
 	private MenuManager helpMenu;
 	private MainPanel mainwindow;
-	private DataManager datamanager;
+	private DataStudentManager datamanager;
 	
 
-	MainMenuManager(MainPanel mainwindow,DataManager datamanager) {
+	MainMenuManager(MainPanel mainwindow,DataStudentManager datamanager) {
 		fileMenu = new MenuManager("File");
 		editMenu = new MenuManager("Edit");
 		helpMenu = new MenuManager("Help");
