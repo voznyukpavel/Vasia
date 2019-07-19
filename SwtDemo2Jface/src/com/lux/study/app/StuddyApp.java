@@ -1,10 +1,13 @@
 package com.lux.study.app;
-import com.lux.study.ui.SWTSimple;
+
+
+
+import com.lux.study.ui.MainPanel;
 
 public class StuddyApp {
 	public static void main(String[] args) {
-		SWTSimple swts = new SWTSimple();
-	//	swts.start();
+		MainPanel swts = new MainPanel();
+		swts.run();
 	}
 }
 
