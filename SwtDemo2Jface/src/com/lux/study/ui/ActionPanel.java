@@ -15,9 +15,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.lux.study.controller.DataManager;
+import com.lux.study.controller.DataStudentObserver;
 import com.lux.study.model.DataStudent;
+import com.lux.study.util.TextChecker;
 
-public class ActionPanel {
+public class ActionPanel implements DataStudentObserver {
 
 	private static final String NAME = "Name";
 	private static final String GROUP = "Group";
@@ -32,26 +34,34 @@ public class ActionPanel {
 	private DataStudent dataStudent;
 	private MainPanel mainwindow;
 
-
 	public ActionPanel(MainPanel mainwindow, SashForm sashForm, DataManager dataManager) {
 
 		this.dataManager = dataManager;
 		this.mainwindow = mainwindow;
 		this.sashForm = sashForm;
-		
+
 		initUI();
 		initListeners();
+		sighnUp();
 	}
 
-	public void setDataStudents(DataStudent dataStudents) {
-		this.dataStudent = dataStudents;
+	@Override
+	public void update(DataStudent dataStudent, DataAction action) {
+		setDataStudents(dataStudent);
+
+	}
+
+	private void setDataStudents(DataStudent dataStudents) {
+		this.dataStudent = dataManager.getBuffer();
+		// System.out.println(dataStudent.getName());
+		// this.dataStudent = dataStudents;
 		setFields(dataStudents);
 	}
-	
-	public DataStudent getDataStudents() {
-		return dataStudent;
+
+	private void sighnUp() {
+		dataManager.registerObserver(this);
 	}
-	
+
 	private void initUI() {
 
 		GridLayout inputDataGridLayout = new GridLayout(4, false);
@@ -114,18 +124,22 @@ public class ActionPanel {
 
 		cancelButton = new Button(inputDataComposite, SWT.PUSH);
 		cancelButton.setText(DataAction.CANCEL.getName());
-		
-		newButton.setEnabled(false);
-		saveButton.setEnabled(false);
-		deleteButton.setEnabled(false);
-		cancelButton.setEnabled(false);
 
 		GridData gridDataCancelButton = new GridData();
 		gridDataCancelButton.widthHint = 80;
 		gridDataCancelButton.heightHint = 30;
 		gridDataCancelButton.horizontalAlignment = SWT.BEGINNING;
-
 		cancelButton.setLayoutData(gridDataCancelButton);
+		preInstalInit();
+	}
+
+	private void preInstalInit() {
+		nameTextValue.setEnabled(false);
+		taskSWTStatusCheckBox.setEnabled(false);
+		groupTextValue.setEnabled(false);
+		saveButton.setEnabled(false);
+		deleteButton.setEnabled(false);
+		cancelButton.setEnabled(false);
 	}
 
 	private void initListeners() {
@@ -165,23 +179,32 @@ public class ActionPanel {
 	}
 
 	private void createNew() {
-		dataStudent=new DataStudent(nameTextValue.getText(),groupTextValue.getText(),taskSWTStatusCheckBox.getSelection());
-		dataManager.setData(dataStudent, DataAction.NEW);
+		nameTextValue.setEnabled(true);
+		taskSWTStatusCheckBox.setEnabled(true);
+		groupTextValue.setEnabled(true);
+		cancelButton.setEnabled(true);
 	}
 
 	private void save() {
-		dataStudent=new DataStudent(nameTextValue.getText(),groupTextValue.getText(),taskSWTStatusCheckBox.getSelection());
+		dataStudent = new DataStudent(nameTextValue.getText(), groupTextValue.getText(),
+				taskSWTStatusCheckBox.getSelection());
 		dataManager.setData(dataStudent, DataAction.SAVE);
+		////////////
 	}
 
 	private void delete() {
-		dataStudent=new DataStudent(nameTextValue.getText(),groupTextValue.getText(),taskSWTStatusCheckBox.getSelection());
-		dataManager.setData(dataStudent, DataAction.DELETE);
+		preInstalInit();
+		/*
+		 * dataStudent = new DataStudent(nameTextValue.getText(),
+		 * groupTextValue.getText(), taskSWTStatusCheckBox.getSelection());
+		 * dataManager.setData(dataStudent, DataAction.DELETE);
+		 */
+	////////////////
 	}
 
 	private void cancel() {
-		dataStudent=new DataStudent(nameTextValue.getText(),groupTextValue.getText(),taskSWTStatusCheckBox.getSelection());
-		dataManager.setData(dataStudent, DataAction.CANCEL);
+		cancelButton.setEnabled(false);
+	//////////////
 	}
 
 	private boolean areTextFildsEmpty() {
@@ -194,11 +217,12 @@ public class ActionPanel {
 	private class TextModifyListener implements ModifyListener {
 		@Override
 		public void modifyText(ModifyEvent e) {
-			newButton.setEnabled(!areTextFildsEmpty());
-			saveButton.setEnabled(!areTextFildsEmpty());
-			deleteButton.setEnabled(!areTextFildsEmpty());
-			cancelButton.setEnabled(!areTextFildsEmpty());
+			if (TextChecker.checker(nameTextValue.getText(), groupTextValue.getText()) && !areTextFildsEmpty()) {
+				saveButton.setEnabled(true);
+			} else {
+				saveButton.setEnabled(false);
+			}
+
 		}
 	}
-
 }
