@@ -33,7 +33,15 @@ public class DataStudentManager  {
 
 	public void setData(DataStudent dataStudent, DataAction action) {
 		this.dataStudent = dataStudent;
-		DataStorage.addData(dataStudent);
+		switch(action) {
+		case SAVE:
+			DataStorage.addData(dataStudent);
+			break;
+		case DELETE:
+			DataStorage.removeData(dataStudent);
+			break;
+		}
+		
 		this.action = action;
 		dataChenged();
 	}

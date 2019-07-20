@@ -1,8 +1,7 @@
 package com.lux.study.model;
-
 import java.util.Comparator;
 
-public class StudentsComparator implements Comparator<DataStudent>{
+public class ComparatorByGroup implements Comparator<DataStudent>{
 
 	@Override
 	public int compare(DataStudent dataStudent1, DataStudent dataStudent2) {
@@ -10,11 +9,10 @@ public class StudentsComparator implements Comparator<DataStudent>{
 		int nameCompare=dataStudent1.getName().compareTo(dataStudent2.getName());
 		int groupCompare=dataStudent1.getGroup().compareTo(dataStudent2.getGroup());
 		
-		if (nameCompare == 0) { 
-            return ((groupCompare == 0) ? nameCompare : groupCompare); 
+		if (groupCompare == 0) { 
+            return ((nameCompare == 0) ? groupCompare : nameCompare); 
         } else { 
-            return nameCompare; 
+            return groupCompare; 
         } 
 	}
-
 }

@@ -2,17 +2,12 @@ package com.lux.study.ui;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableColorProvider;
-import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -27,10 +22,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 
-import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.DataStorage;
+import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.DataStudentObserver;
 import com.lux.study.controller.DataTableManager;
 import com.lux.study.model.DataStudent;
@@ -41,7 +35,6 @@ public class TablePanel implements DataStudentObserver {
 	private static final String GROUP = "Group";
 	private static final String DONE = "SWT Done";
 
-//	private List<DataStudent> entries;
 	private SashForm sashForm;
 	private Composite tableComposite;
 	private TableViewer tableViever;
@@ -59,37 +52,23 @@ public class TablePanel implements DataStudentObserver {
 		this.dataManager = dataManager;
 		this.dataTableManager=dataTableManager;
 		this.sashForm = sashForm;
-		//entries = new LinkedList();
-	//	dataStorage=new DataStorage(dataManager);
-
 		initUI();
 		initListeners();
 		sighnUp();
 	}
-
-	/*
-	 * public DataStudent getDataStudent() { return dataStudent; }
-	 * 
-	 * public void setDataStudent(DataStudent dataStudent) { this.dataStudent =
-	 * dataStudent; }
-	 */
-
 	private void sighnUp() {
 		dataManager.registerObserver(this);
 	}
 
 	@Override
 	public void update(DataStudent dataStudent, DataAction action) {
-//	System.out.println(dataStorage.getLast());	
 		switch (action) {
-		case NEW:
-
 		case SAVE:
 			addNewInstance(dataStudent);
-		case DELETE:
-
-		case CANCEL:
-
+			break;
+		case DELETE:			
+			table.remove(table.getSelectionIndices ());
+			break;
 		}
 	}
 

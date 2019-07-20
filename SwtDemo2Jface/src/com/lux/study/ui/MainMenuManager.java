@@ -1,24 +1,25 @@
 package com.lux.study.ui;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.ApplicationWindow;
+
 import com.lux.study.controller.DataStudentManager;
 
-public class MainMenuManager  extends MenuManager {
+public class MainMenuManager extends MenuManager {
 
 	private MenuManager fileMenu;
 	private MenuManager editMenu;
 	private MenuManager helpMenu;
 	private MainPanel mainwindow;
 	private DataStudentManager datamanager;
-	
 
-	MainMenuManager(MainPanel mainwindow,DataStudentManager datamanager) {
+	MainMenuManager(MainPanel mainwindow, DataStudentManager datamanager) {
 		fileMenu = new MenuManager("File");
 		editMenu = new MenuManager("Edit");
 		helpMenu = new MenuManager("Help");
-		this.datamanager=datamanager;
+		this.datamanager = datamanager;
 		this.mainwindow = mainwindow;
 		initMenu();
 	}
@@ -40,8 +41,9 @@ public class MainMenuManager  extends MenuManager {
 		public New() {
 			super("New", AS_PUSH_BUTTON);
 		}
+
 		public void run() {
-		//	System.out.println(datamanager);			
+			// System.out.println(datamanager);
 		}
 	}
 
@@ -50,8 +52,9 @@ public class MainMenuManager  extends MenuManager {
 		public Save() {
 			super("Save", AS_PUSH_BUTTON);
 		}
+
 		public void run() {
-		//	datamanager.setAction(DataAction.SAVE);
+			// datamanager.setAction(DataAction.SAVE);
 		}
 	}
 
@@ -60,8 +63,9 @@ public class MainMenuManager  extends MenuManager {
 		public Delete() {
 			super("Delete", AS_PUSH_BUTTON);
 		}
+
 		public void run() {
-		//	datamanager.setAction(DataAction.DELETE);
+			// datamanager.setAction(DataAction.DELETE);
 		}
 	}
 
@@ -70,8 +74,9 @@ public class MainMenuManager  extends MenuManager {
 		public Cancel() {
 			super("Cancel", AS_PUSH_BUTTON);
 		}
+
 		public void run() {
-		//	datamanager.setAction(DataAction.CANCEL);
+			// datamanager.setAction(DataAction.CANCEL);
 		}
 	}
 
@@ -82,19 +87,26 @@ public class MainMenuManager  extends MenuManager {
 			super("About", AS_PUSH_BUTTON);
 			this.awin = awin;
 		}
+
 		public void run() {
-			MessageDialog.openInformation(awin.getShell(), "About this program", "The version of this application is 1.0");
+			MessageDialog.openInformation(awin.getShell(), "About this program",
+					"The version of this application is 1.0");
 		}
 	}
-	
+
 	private class Exit extends Action {
 		private ApplicationWindow awin;
+
 		public Exit(ApplicationWindow awin) {
 			super("Exit@Alt+X", AS_PUSH_BUTTON);
 			this.awin = awin;
 		}
+
 		public void run() {
-			this.awin.close();
+			boolean result = MessageDialog.openConfirm(awin.getShell(), "Exit", "Areyou surre?");
+			if (result) {
+				this.awin.close();
+			}
 		}
 	}
 

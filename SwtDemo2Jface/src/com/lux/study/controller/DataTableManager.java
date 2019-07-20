@@ -3,12 +3,11 @@ package com.lux.study.controller;
 import java.util.ArrayList;
 
 import com.lux.study.model.DataStudent;
-import com.lux.study.ui.DataAction;
+
 
 public class DataTableManager {
 	private ArrayList<DataTableObserver> observers;
 	private DataStudent dataStudent;
-
 
 	public DataTableManager() {
 		observers = new ArrayList<DataTableObserver>();
@@ -31,7 +30,6 @@ public class DataTableManager {
 
 	public void setData(DataStudent dataStudent) {
 		this.dataStudent = dataStudent;
-		DataStorage.addData(dataStudent);
 		dataChenged();
 	}
 	 
