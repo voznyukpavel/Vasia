@@ -29,8 +29,7 @@ public class MainPanel extends ApplicationWindow {
 	protected Control createContents(Composite parent) {
 
 		sashForm = new SashForm(parent, SWT.HORIZONTAL| SWT.SMOOTH);
-		
-		
+				
 		tablePanel= new TablePanel(this,sashForm,dataManager,dataTableManager);
 		actionPanel= new ActionPanel(this,sashForm,dataManager,dataTableManager);
 		
@@ -39,8 +38,7 @@ public class MainPanel extends ApplicationWindow {
 	}
 
 	protected MenuManager createMenuManager() {
-		MainMenuManager mainMenuhead = new MainMenuManager(this,dataManager);
-	
+		MainMenuManager mainMenuhead = new MainMenuManager(this,dataManager);	
 		return mainMenuhead;
 	}
 

@@ -10,7 +10,16 @@ public class DataStudentManager  {
 	private ArrayList<DataStudentObserver> observers;
 	private DataStudent dataStudent;
 	private DataAction action;
-	private DataStudent buffer;
+	private boolean successSaving; 
+	private boolean successRemoving;
+
+	public boolean isSuccessRemoving() {
+		return successRemoving;
+	}
+
+	public boolean isSuccessSaving() {
+		return successSaving;
+	}
 
 	public DataStudentManager() {
 		observers = new ArrayList<DataStudentObserver>();
@@ -35,22 +44,14 @@ public class DataStudentManager  {
 		this.dataStudent = dataStudent;
 		switch(action) {
 		case SAVE:
-			DataStorage.addData(dataStudent);
+			successSaving=DataStorage.addData(dataStudent);
 			break;
 		case DELETE:
-			DataStorage.removeData(dataStudent);
+			successRemoving=DataStorage.removeData(dataStudent);
 			break;
-		}
-		
+		}	
 		this.action = action;
 		dataChenged();
 	}
 
-	/*
-	 * public void setFields(DataStudent selections) { buffer = selections; }
-	 */
-
-	public DataStudent getBuffer() {
-		return buffer;
-	}
 }

@@ -1,27 +1,29 @@
 package com.lux.study.controller;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import com.lux.study.model.ComparatorByStudent;
 import com.lux.study.model.DataStudent;
 
 public class DataStorage {
-	private static List<DataStudent> entries = new LinkedList<DataStudent>();
+	private static Set<DataStudent> entries = new TreeSet<DataStudent>(new ComparatorByStudent());
 
 	private DataStorage() {
 
 	}
+	
+	public static boolean addData(DataStudent dataStudent) {
 
-	public static void addData(DataStudent dataStudent) {
-		entries.add(dataStudent);
+		return entries.add(dataStudent);
 	}
 
-	public static List<DataStudent> getData() {
+	public static Set<DataStudent> getData() {
 		return entries;
 	}
 
-	public static void removeData(DataStudent dataStudent) {
-		entries.remove(dataStudent);
+	public static boolean removeData(DataStudent dataStudent) {
+		return entries.remove(dataStudent);
 	}
 
 }

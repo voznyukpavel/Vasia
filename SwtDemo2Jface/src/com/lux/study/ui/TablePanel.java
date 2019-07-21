@@ -2,7 +2,7 @@ package com.lux.study.ui;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -12,11 +12,14 @@ import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
-
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,6 +32,7 @@ import com.lux.study.controller.DataStudentObserver;
 import com.lux.study.controller.DataTableManager;
 import com.lux.study.model.DataStudent;
 
+@SuppressWarnings("deprecation")
 public class TablePanel implements DataStudentObserver {
 
 	private static final String NAME = "Name";
@@ -45,17 +49,18 @@ public class TablePanel implements DataStudentObserver {
 	private MainPanel mainwindow;
 	private Table table;
 
-
-	public TablePanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,DataTableManager dataTableManager) {
+	public TablePanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,
+			DataTableManager dataTableManager) {
 		super();
 		this.mainwindow = mainwindow;
 		this.dataManager = dataManager;
-		this.dataTableManager=dataTableManager;
+		this.dataTableManager = dataTableManager;
 		this.sashForm = sashForm;
 		initUI();
 		initListeners();
 		sighnUp();
 	}
+
 	private void sighnUp() {
 		dataManager.registerObserver(this);
 	}
@@ -66,8 +71,9 @@ public class TablePanel implements DataStudentObserver {
 		case SAVE:
 			addNewInstance(dataStudent);
 			break;
-		case DELETE:			
-			table.remove(table.getSelectionIndices ());
+		case DELETE:
+			tableViever.refresh();
+
 			break;
 		}
 	}
@@ -76,6 +82,11 @@ public class TablePanel implements DataStudentObserver {
 		tableViever.setInput(DataStorage.getData());
 		tableViever.refresh();
 	}
+	
+	/*
+	 * private void removeInstance() { table.remove(table.getSelectionIndices());
+	 * tableViever.refresh(); }
+	 */
 
 	private void initUI() {
 		GridLayout tableGridLayout = new GridLayout(1, false);
@@ -87,9 +98,7 @@ public class TablePanel implements DataStudentObserver {
 		tableViever = new TableViewer(tableComposite);
 
 		tableViever.setContentProvider(new StudentContentProvider());
-
-		
-
+		tableViever.setSorter(new StudentViewerSorter(NAME));
 		tableLayout = new TableLayout();
 		tableLayout.addColumnData(new ColumnWeightData(60, true));
 		tableLayout.addColumnData(new ColumnWeightData(20, true));
@@ -102,11 +111,13 @@ public class TablePanel implements DataStudentObserver {
 		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViever, SWT.PUSH);
 		tableViewerColumn.setLabelProvider(new TextTableColumnProvider(0));
 		tableViewerColumn.getColumn().setText(NAME);
-
+		tableViewerColumn.getColumn().addSelectionListener((SelectionListener) new  ColumnsSelectionListener(NAME));
+			
 		tableViewerColumn = new TableViewerColumn(tableViever, SWT.PUSH);
 		tableViewerColumn.setLabelProvider(new TextTableColumnProvider(1));
 		tableViewerColumn.getColumn().setText(GROUP);
-
+		tableViewerColumn.getColumn().addSelectionListener((SelectionListener) new  ColumnsSelectionListener(GROUP));
+		
 		tableViewerColumn = new TableViewerColumn(tableViever, SWT.NONE);
 		tableViewerColumn.setLabelProvider(new ImageTableColumnProvider(2));
 		tableViewerColumn.getColumn().setText(DONE);
@@ -128,13 +139,27 @@ public class TablePanel implements DataStudentObserver {
 		IStructuredSelection selection = (IStructuredSelection) tableViever.getSelection();
 		Object selections = selection.getFirstElement();
 		if (selections != null) {
-			dataTableManager.setData((DataStudent)selections);
+			dataTableManager.setData((DataStudent) selections);
 		}
+	}
+	
+	private class ColumnsSelectionListener extends SelectionAdapter{
+		private String column;
+
+		public ColumnsSelectionListener(String column) {
+			this.column = column;
+		}
+		public void widgetSelected(SelectionEvent event) {
+			((StudentViewerSorter) tableViever.getSorter()).doSort(column);
+			tableViever.refresh();
+		}
+		
 	}
 
 	private class StudentContentProvider implements IStructuredContentProvider {
+		@SuppressWarnings("unchecked")
 		public Object[] getElements(Object inputElement) {
-			return ((List<DataStudent>) inputElement).toArray();
+			return ((Set<DataStudent>) inputElement).toArray();
 		}
 
 		public void dispose() {
@@ -195,6 +220,44 @@ public class TablePanel implements DataStudentObserver {
 				}
 			}
 			return image;
+		}
+	}
+
+	private class StudentViewerSorter extends ViewerSorter {
+
+		private static final int ASCENDING = 0;
+		private static final int DESCENDING = 1;
+		private String column;
+		private int direction;
+		
+		StudentViewerSorter(String column){
+			this.column=column;
+		}
+
+		public void doSort(String column) {
+			if (column == this.column) {
+				direction = 1 - direction;
+			} else {
+				this.column = column;
+				direction = ASCENDING;
+			}
+		}
+		
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			int rc = 0;
+			DataStudent ds1 = (DataStudent) e1;
+			DataStudent ds2 = (DataStudent) e2;
+			switch (column) {
+			case NAME:
+				rc = collator.compare(ds1.getName(), ds2.getName());
+				break;
+			case GROUP:
+				rc = collator.compare(ds1.getGroup(), ds2.getGroup());
+				break;
+			}
+			if (direction == DESCENDING)
+				rc = -rc;
+			return rc;
 		}
 	}
 }

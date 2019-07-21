@@ -38,11 +38,14 @@ public class ActionPanel implements DataTableObserver {
 
 	public ActionPanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,
 			DataTableManager dataTableManager) {
+
 		this.dataTableManager = dataTableManager;
 		this.dataManager = dataManager;
 		this.mainwindow = mainwindow;
 		this.sashForm = sashForm;
+		temp= new DataStudent("","",false);
 		initUI();
+		preInstalInit();
 		initListeners();
 		sighnUp();
 	}
@@ -51,10 +54,6 @@ public class ActionPanel implements DataTableObserver {
 	public void update(DataStudent dataStudent) {
 		temp = dataStudent;
 		setFields(dataStudent);
-	}
-
-	private void sighnUp() {
-		dataTableManager.registerObserver(this);
 	}
 
 	private void initUI() {
@@ -124,7 +123,7 @@ public class ActionPanel implements DataTableObserver {
 		gridDataCancelButton.heightHint = 30;
 		gridDataCancelButton.horizontalAlignment = SWT.BEGINNING;
 		cancelButton.setLayoutData(gridDataCancelButton);
-		preInstalInit();
+
 	}
 
 	private void preInstalInit() {
@@ -164,14 +163,17 @@ public class ActionPanel implements DataTableObserver {
 				cancel();
 			}
 		});
+
 		taskSWTStatusCheckBox.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				cancelButton.setEnabled(true);
-				if (!areTextFildsEmpty()) {
-					saveButton.setEnabled(true);
-				}
+				saveButton.setEnabled(!areTextFildsEmpty());
 			}
 		});
+	}
+
+	private void sighnUp() {
+		dataTableManager.registerObserver(this);
 	}
 
 	private void setFields(DataStudent dataStudents) {
@@ -206,24 +208,35 @@ public class ActionPanel implements DataTableObserver {
 		dataStudent = new DataStudent(nameTextValue.getText(), groupTextValue.getText(),
 				taskSWTStatusCheckBox.getSelection());
 		dataManager.setData(dataStudent, DataAction.SAVE);
+		if (!dataManager.isSuccessSaving()) {
+			MessageDialog.openWarning(mainwindow.getShell(), "Data Cuoldnot be added",
+					"This Student is allready exist");
+		}
+		clearTemp();
 	}
 
 	private void delete() {
 		if (MessageDialog.openConfirm(mainwindow.getShell(), "Delete",
-				"Are you surre, you want to terminate the student: "+dataStudent.toString()+" ?")) {
+				"Are you surre, you want to terminate the student: " + dataStudent.toString() + " ?")) {
 			deleteButton.setEnabled(false);
-			temp = null;
+			clearTemp();
 			dataStudent = new DataStudent(nameTextValue.getText(), groupTextValue.getText(),
 					taskSWTStatusCheckBox.getSelection());
 			clearFildsAndSWTStatus();
 			dataManager.setData(dataStudent, DataAction.DELETE);
+			if (dataManager.isSuccessRemoving()) {
+				MessageDialog.openInformation(mainwindow.getShell(), "Deleted",
+						" Student " + dataStudent.toString() + " was deleted");
+			}
+			clearFildsAndSWTStatus();
+			clearTemp();
 		}
 	}
 
 	private void cancel() {
-		if (!areBothOfFildsEmpty() && temp == null) {
+		if (!areBothOfFildsEmpty() && isTempClean()) {
 			clearFildsAndSWTStatus();
-		} else if(temp != null) {
+		} else if (!isTempClean()) {
 			setFields(temp);
 		}
 		cancelButton.setEnabled(false);
@@ -233,6 +246,16 @@ public class ActionPanel implements DataTableObserver {
 		nameTextValue.setText("");
 		groupTextValue.setText("");
 		taskSWTStatusCheckBox.setSelection(false);
+	}
+
+	private void clearTemp() {
+		temp.setName("");
+		temp.setGroup("");
+		temp.setSWTDOne(false);
+	}
+
+	private boolean isTempClean() {
+		return (temp.getName() == "" && temp.getGroup() == "");
 	}
 
 	private boolean areTextFildsEmpty() {
@@ -252,7 +275,7 @@ public class ActionPanel implements DataTableObserver {
 	private class TextModifyListener implements ModifyListener {
 		@Override
 		public void modifyText(ModifyEvent e) {
-			if (temp != null) {
+			if (!isTempClean()) {
 				deleteButton.setEnabled(true);
 			}
 			cancelButton.setEnabled(true);
