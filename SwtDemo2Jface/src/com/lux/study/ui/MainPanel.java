@@ -38,6 +38,7 @@ public class MainPanel extends ApplicationWindow {
 	}
 
 	protected MenuManager createMenuManager() {
+		super.createMenuManager();
 		MainMenuManager mainMenuhead = new MainMenuManager(this,dataManager);	
 		return mainMenuhead;
 	}

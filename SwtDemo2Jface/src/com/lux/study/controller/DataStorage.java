@@ -12,18 +12,18 @@ public class DataStorage {
 	private DataStorage() {
 
 	}
-	
-	public static boolean addData(DataStudent dataStudent) {
 
+	public static boolean removeData(DataStudent dataStudent) {
+		return entries.remove(dataStudent);
+	}
+
+	public static boolean update(DataStudent temp, DataStudent dataStudent) {
+		entries.remove(temp);
 		return entries.add(dataStudent);
 	}
 
 	public static Set<DataStudent> getData() {
 		return entries;
-	}
-
-	public static boolean removeData(DataStudent dataStudent) {
-		return entries.remove(dataStudent);
 	}
 
 }

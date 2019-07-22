@@ -1,6 +1,7 @@
 package com.lux.study.ui;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ModifyEvent;
@@ -16,11 +17,12 @@ import org.eclipse.swt.widgets.Text;
 
 import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.DataTableManager;
-import com.lux.study.controller.DataTableObserver;
-import com.lux.study.model.DataStudent;
+import com.lux.study.event.TableSelectionEvent;
+import com.lux.study.controller.DataTableListener;
+
 import com.lux.study.util.TextChecker;
 
-public class ActionPanel implements DataTableObserver {
+public class ActionPanel implements DataTableListener {
 
 	private static final String NAME = "Name";
 	private static final String GROUP = "Group";
@@ -33,7 +35,6 @@ public class ActionPanel implements DataTableObserver {
 	private Button taskSWTStatusCheckBox, newButton, saveButton, deleteButton, cancelButton;
 	private DataStudentManager dataManager;
 	private DataTableManager dataTableManager;
-	private DataStudent dataStudent, temp;
 	private MainPanel mainwindow;
 
 	public ActionPanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,
@@ -43,7 +44,6 @@ public class ActionPanel implements DataTableObserver {
 		this.dataManager = dataManager;
 		this.mainwindow = mainwindow;
 		this.sashForm = sashForm;
-		temp= new DataStudent("","",false);
 		initUI();
 		preInstalInit();
 		initListeners();
@@ -51,9 +51,10 @@ public class ActionPanel implements DataTableObserver {
 	}
 
 	@Override
-	public void update(DataStudent dataStudent) {
-		temp = dataStudent;
-		setFields(dataStudent);
+	public void update(TableSelectionEvent event) {
+		nameTextValue.setText(event.getName());
+		groupTextValue.setText(event.getGroup());
+		taskSWTStatusCheckBox.setSelection(event.isSWTtask());
 	}
 
 	private void initUI() {
@@ -167,26 +168,13 @@ public class ActionPanel implements DataTableObserver {
 		taskSWTStatusCheckBox.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				cancelButton.setEnabled(true);
-				saveButton.setEnabled(!areTextFildsEmpty());
+				saveButton.setEnabled(!areTextFildsEmpty()&&checkFields());
 			}
 		});
 	}
 
 	private void sighnUp() {
 		dataTableManager.registerObserver(this);
-	}
-
-	private void setFields(DataStudent dataStudents) {
-		nameTextValue.setText(dataStudents.getName());
-		groupTextValue.setText(dataStudents.getGroup());
-		taskSWTStatusCheckBox.setSelection(dataStudents.isSWTDOne());
-	}
-
-	private DataStudent getFields() {
-		dataStudent.setName(nameTextValue.getText());
-		dataStudent.setGroup(groupTextValue.getText());
-		dataStudent.setSWTDOne(taskSWTStatusCheckBox.getSelection());
-		return dataStudent;
 	}
 
 	private void createNew() {
@@ -205,39 +193,50 @@ public class ActionPanel implements DataTableObserver {
 	}
 
 	private void save() {
-		dataStudent = new DataStudent(nameTextValue.getText(), groupTextValue.getText(),
+		dataManager.createStudent(nameTextValue.getText(), groupTextValue.getText(),
 				taskSWTStatusCheckBox.getSelection());
-		dataManager.setData(dataStudent, DataAction.SAVE);
+
+		if (!dataTableManager.checkBufferToNULL()  && !tempEqualsToFieldsAndSWT()&&checkFields()) {
+			dataManager.setData(dataTableManager.getDataStudentBuffer(), DataAction.SAVE);
+		} else if (dataTableManager.checkBufferToNULL())
+
+		{
+			dataTableManager.setDataStudentBuffer(nameTextValue.getText(), groupTextValue.getText(),
+					taskSWTStatusCheckBox.getSelection());
+			dataManager.setData(dataTableManager.getDataStudentBuffer(), DataAction.SAVE);
+		}
+
 		if (!dataManager.isSuccessSaving()) {
 			MessageDialog.openWarning(mainwindow.getShell(), "Data Cuoldnot be added",
 					"This Student is allready exist");
 		}
-		clearTemp();
+		dataTableManager.setDataStudentBuffer(null);
 	}
 
 	private void delete() {
 		if (MessageDialog.openConfirm(mainwindow.getShell(), "Delete",
-				"Are you surre, you want to terminate the student: " + dataStudent.toString() + " ?")) {
+				"Are you surre, you want to terminate the student: "
+						+ dataTableManager.getDataStudentBufferToString()  + " ?")) {
 			deleteButton.setEnabled(false);
-			clearTemp();
-			dataStudent = new DataStudent(nameTextValue.getText(), groupTextValue.getText(),
+			dataManager.createStudent(nameTextValue.getText(), groupTextValue.getText(),
 					taskSWTStatusCheckBox.getSelection());
-			clearFildsAndSWTStatus();
-			dataManager.setData(dataStudent, DataAction.DELETE);
+			dataManager.setData(null, DataAction.DELETE);
 			if (dataManager.isSuccessRemoving()) {
 				MessageDialog.openInformation(mainwindow.getShell(), "Deleted",
-						" Student " + dataStudent.toString() + " was deleted");
+						" Student " + dataTableManager.getDataStudentBufferToString() +" was deleted");
 			}
+			dataTableManager.setDataStudentBuffer(null);
 			clearFildsAndSWTStatus();
-			clearTemp();
 		}
 	}
 
 	private void cancel() {
-		if (!areBothOfFildsEmpty() && isTempClean()) {
+		if (!areBothOfFildsEmpty() &&dataTableManager.checkBufferToNULL() ) {
 			clearFildsAndSWTStatus();
-		} else if (!isTempClean()) {
-			setFields(temp);
+		} else if (!dataTableManager.checkBufferToNULL() ) {
+			nameTextValue.setText(dataTableManager.getDataStudentBufferName());
+			groupTextValue.setText(dataTableManager.getDataStudentBufferGroup());
+			taskSWTStatusCheckBox.setSelection(dataTableManager.getDataStudentBufferSWTTask());
 		}
 		cancelButton.setEnabled(false);
 	}
@@ -248,14 +247,10 @@ public class ActionPanel implements DataTableObserver {
 		taskSWTStatusCheckBox.setSelection(false);
 	}
 
-	private void clearTemp() {
-		temp.setName("");
-		temp.setGroup("");
-		temp.setSWTDOne(false);
-	}
-
-	private boolean isTempClean() {
-		return (temp.getName() == "" && temp.getGroup() == "");
+	private boolean tempEqualsToFieldsAndSWT() {
+		return (dataTableManager.getDataStudentBufferName().equals(nameTextValue.getText())
+				&& dataTableManager.getDataStudentBufferGroup().equals(groupTextValue.getText())
+				&& dataTableManager.getDataStudentBufferSWTTask() == taskSWTStatusCheckBox.getSelection());
 	}
 
 	private boolean areTextFildsEmpty() {
@@ -272,14 +267,20 @@ public class ActionPanel implements DataTableObserver {
 		return false;
 	}
 
+	private boolean checkFields() {
+		return TextChecker.checker(nameTextValue.getText(), groupTextValue.getText()) && !areTextFildsEmpty();
+	}
+	
+
 	private class TextModifyListener implements ModifyListener {
 		@Override
 		public void modifyText(ModifyEvent e) {
-			if (!isTempClean()) {
+			if (!dataTableManager.checkBufferToNULL()  ) {
 				deleteButton.setEnabled(true);
 			}
 			cancelButton.setEnabled(true);
-			if (TextChecker.checker(nameTextValue.getText(), groupTextValue.getText()) && !areTextFildsEmpty()) {
+			if (checkFields() && dataTableManager.checkBufferToNULL() 
+					|| !dataTableManager.checkBufferToNULL()  && (!tempEqualsToFieldsAndSWT())) {
 				saveButton.setEnabled(true);
 			} else {
 				saveButton.setEnabled(false);

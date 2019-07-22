@@ -8,11 +8,11 @@ public class TextChecker {
 
 	}
 
-	private static final String DOUBLE_REGULAR_EXPRESSION = "[A-Za-z ]+";
-	private static final String DOUBLE_REGULAR_EXPRESSION2 = "[A-Za-z0-9_.]+";
+	private static final String NAME_REGULAR_EXPRESSION = "[A-Za-z ]+";
+	private static final String GROUP_REGULAR_EXPRESSION = "[A-Za-z0-9_.]+";
 
 	public static boolean checker(String name, String group) {
-		if (checkTextFild(name, DOUBLE_REGULAR_EXPRESSION) && checkTextFild(group, DOUBLE_REGULAR_EXPRESSION2)) {
+		if (checkTextFild(name, NAME_REGULAR_EXPRESSION) && checkTextFild(group, GROUP_REGULAR_EXPRESSION)) {
 			return true;
 		}
 		return false;

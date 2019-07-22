@@ -28,12 +28,13 @@ import org.eclipse.swt.widgets.Table;
 
 import com.lux.study.controller.DataStorage;
 import com.lux.study.controller.DataStudentManager;
-import com.lux.study.controller.DataStudentObserver;
+import com.lux.study.controller.DataStudentListener;
 import com.lux.study.controller.DataTableManager;
+import com.lux.study.event.ActionPanelEvent;
 import com.lux.study.model.DataStudent;
 
 @SuppressWarnings("deprecation")
-public class TablePanel implements DataStudentObserver {
+public class TablePanel implements DataStudentListener {
 
 	private static final String NAME = "Name";
 	private static final String GROUP = "Group";
@@ -45,14 +46,12 @@ public class TablePanel implements DataStudentObserver {
 	private TableLayout tableLayout;
 	private DataStudentManager dataManager;
 	private DataTableManager dataTableManager;
-	private DataStudent dataStudent;
-	private MainPanel mainwindow;
 	private Table table;
 
 	public TablePanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,
 			DataTableManager dataTableManager) {
 		super();
-		this.mainwindow = mainwindow;
+		
 		this.dataManager = dataManager;
 		this.dataTableManager = dataTableManager;
 		this.sashForm = sashForm;
@@ -66,27 +65,25 @@ public class TablePanel implements DataStudentObserver {
 	}
 
 	@Override
-	public void update(DataStudent dataStudent, DataAction action) {
-		switch (action) {
-		case SAVE:
-			addNewInstance(dataStudent);
-			break;
+	public void update(ActionPanelEvent event) {
+		switch (event.getAction()) {
 		case DELETE:
 			tableViever.refresh();
-
+			break;
+		case SAVE:
+			addNewInstance();
+			tableViever.refresh();
+			break;
+		default:
 			break;
 		}
 	}
 
-	private void addNewInstance(DataStudent dataStudent) {
+	private void addNewInstance( ) {
 		tableViever.setInput(DataStorage.getData());
 		tableViever.refresh();
 	}
 	
-	/*
-	 * private void removeInstance() { table.remove(table.getSelectionIndices());
-	 * tableViever.refresh(); }
-	 */
 
 	private void initUI() {
 		GridLayout tableGridLayout = new GridLayout(1, false);
@@ -139,7 +136,7 @@ public class TablePanel implements DataStudentObserver {
 		IStructuredSelection selection = (IStructuredSelection) tableViever.getSelection();
 		Object selections = selection.getFirstElement();
 		if (selections != null) {
-			dataTableManager.setData((DataStudent) selections);
+			dataTableManager.setData(selections);
 		}
 	}
 	
@@ -157,9 +154,9 @@ public class TablePanel implements DataStudentObserver {
 	}
 
 	private class StudentContentProvider implements IStructuredContentProvider {
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "rawtypes" })
 		public Object[] getElements(Object inputElement) {
-			return ((Set<DataStudent>) inputElement).toArray();
+			return ((Set) inputElement).toArray();
 		}
 
 		public void dispose() {
