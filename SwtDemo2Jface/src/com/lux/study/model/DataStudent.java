@@ -1,19 +1,28 @@
 package com.lux.study.model;
 
+
+
 public class DataStudent {
 	private String name;
 	private String group;
 	private boolean isSWTDOne;
+	private  int id;
 
-	public DataStudent(String name, String group, boolean isSWTDOne) {
+
+	public DataStudent(String name, String group, boolean isSWTDOne,int id) {
 		super();
 		this.name = name;
 		this.group = group;
 		this.isSWTDOne = isSWTDOne;
+		this.id=id;
 	}
 
 	public String getName() {
 		return name;
+	}
+	
+	public int getID() {
+		return id;
 	}
 
 	public String getGroup() {
@@ -22,6 +31,10 @@ public class DataStudent {
 
 	public boolean isSWTDOne() {
 		return isSWTDOne;
+	}
+	
+	public void setID(int id) {
+		this.id = id;
 	}
 
 	public void setName(String name) {
@@ -42,6 +55,9 @@ public class DataStudent {
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((group == null) ? 0 : group.hashCode());
+		result=+id;
+		if (result <= 0)
+			result *= -1;
 		return result;
 	}
 
@@ -65,7 +81,7 @@ public class DataStudent {
 
 	@Override
 	public String toString() {
-		return name+" "+group;
+		return name + " " + group;
 	}
 
 }

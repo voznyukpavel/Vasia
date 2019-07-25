@@ -1,29 +1,37 @@
-package com.lux.study.controller;
+package com.lux.study.storage;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
-import com.lux.study.model.ComparatorByStudent;
 import com.lux.study.model.DataStudent;
 
 public class DataStorage {
-	private static Set<DataStudent> entries = new TreeSet<DataStudent>(new ComparatorByStudent());
+	private static Map<Integer, DataStudent> students = new HashMap<Integer, DataStudent>();
+	private static int counter = 0;
 
 	private DataStorage() {
 
 	}
 
-	public static boolean removeData(DataStudent dataStudent) {
-		return entries.remove(dataStudent);
+	public static void appendDataStudent(DataStudent dataStudent) {
+		++counter;
+		dataStudent.setID(counter);
+		students.put(counter, dataStudent);
 	}
 
-	public static boolean update(DataStudent temp, DataStudent dataStudent) {
-		entries.remove(temp);
-		return entries.add(dataStudent);
+	public static void removeDataStudent(int idStudent) {
+		students.remove(idStudent);
+	}
+
+	public static void updateDataStudent(int idStudent, DataStudent dataStudent) {
+		students.replace(idStudent, dataStudent);
 	}
 
 	public static Set<DataStudent> getData() {
-		return entries;
+		Set<DataStudent> set = new HashSet<DataStudent>(students.values());
+		return set;
 	}
 
 }

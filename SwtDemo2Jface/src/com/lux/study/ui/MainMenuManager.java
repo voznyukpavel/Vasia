@@ -5,35 +5,69 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.ApplicationWindow;
 
-import com.lux.study.controller.DataStudentManager;
+import com.lux.study.controller.DataActionPanelStateManager;
+import com.lux.study.event.ActionPanelStateEvent;
+import com.lux.study.listener.ActionPanelStateListener;
 
-public class MainMenuManager extends MenuManager {
+public class MainMenuManager extends MenuManager implements ActionPanelStateListener {
 
 	private MenuManager fileMenu;
 	private MenuManager editMenu;
 	private MenuManager helpMenu;
 	private MainPanel mainwindow;
-	private DataStudentManager datamanager;
-
-	MainMenuManager(MainPanel mainwindow, DataStudentManager datamanager) {
+	
+	private DataActionPanelStateManager dataActionPanelmanager;
+	private MenuCallsActionPanel callActionPanel ;
+	
+	private New newButton;
+	private Save saveButton;
+	private Delete deleteButton;
+	private Cancel cancelButton;
+	
+	public MainMenuManager(MainPanel mainwindow, DataActionPanelStateManager dataActionPanelmanager,MenuCallsActionPanel dataMenuManager
+			 ) {
 		fileMenu = new MenuManager("File");
 		editMenu = new MenuManager("Edit");
 		helpMenu = new MenuManager("Help");
-		this.datamanager = datamanager;
+		
+		this.callActionPanel=dataMenuManager;
+		this.dataActionPanelmanager = dataActionPanelmanager;
 		this.mainwindow = mainwindow;
+		
 		initMenu();
+		sighnUp();
 	}
 
 	private void initMenu() {
+		
+		newButton=new New();
+		saveButton= new Save();
+		deleteButton= new Delete();
+		cancelButton= new Cancel();
+		
 		fileMenu.add(new Exit(mainwindow));
-		editMenu.add(new New());
-		editMenu.add(new Save());
-		editMenu.add(new Delete());
-		editMenu.add(new Cancel());
+		
+		editMenu.add(newButton);
+		editMenu.add(saveButton);
+		editMenu.add(deleteButton);
+		editMenu.add(cancelButton);
+
 		helpMenu.add(new About(mainwindow));
+
 		add(fileMenu);
 		add(editMenu);
 		add(helpMenu);
+		
+	}
+
+	@Override
+	public void updatePanelState(ActionPanelStateEvent event) {
+		
+		newButton.setEnabled(event.isNewButtonState());
+		saveButton.setEnabled(event.isSaveButtonState());
+		deleteButton.setEnabled(event.isDeleteButtonState());
+		cancelButton.setEnabled(event.isCancelButtonState());
+		
 	}
 
 	private class New extends Action {
@@ -43,7 +77,7 @@ public class MainMenuManager extends MenuManager {
 		}
 
 		public void run() {
-			// System.out.println(datamanager);
+			callActionPanel.actionNew();
 		}
 	}
 
@@ -51,10 +85,11 @@ public class MainMenuManager extends MenuManager {
 
 		public Save() {
 			super("Save", AS_PUSH_BUTTON);
+
 		}
 
 		public void run() {
-			// datamanager.setAction(DataAction.SAVE);
+			callActionPanel.actionSave();
 		}
 	}
 
@@ -62,10 +97,11 @@ public class MainMenuManager extends MenuManager {
 
 		public Delete() {
 			super("Delete", AS_PUSH_BUTTON);
+
 		}
 
 		public void run() {
-			// datamanager.setAction(DataAction.DELETE);
+			callActionPanel.actionDelete();
 		}
 	}
 
@@ -76,7 +112,7 @@ public class MainMenuManager extends MenuManager {
 		}
 
 		public void run() {
-			// datamanager.setAction(DataAction.CANCEL);
+			callActionPanel.actionCancel();
 		}
 	}
 
@@ -110,4 +146,7 @@ public class MainMenuManager extends MenuManager {
 		}
 	}
 
+	private void sighnUp() {
+		dataActionPanelmanager.registerObserver(this);
+	}
 }

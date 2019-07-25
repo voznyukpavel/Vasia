@@ -10,12 +10,19 @@ public class TableSelectionEvent extends EventObject {
 	private String name;
 	private String group;
 	private boolean taskDone;
+	private int ID;
+	
 
-	public TableSelectionEvent(Object source, String name, String group, boolean sWTtask) {
+	public TableSelectionEvent(Object source, String name, String group, boolean sWTtask,int ID) {
 		super(source);
 		this.name = name;
 		this.group = group;
 		taskDone = sWTtask;
+		this.ID=ID;
+	}
+	
+	public int getID() {
+		return ID;
 	}
 
 	public String getName() {

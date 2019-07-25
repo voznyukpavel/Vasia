@@ -1,4 +1,4 @@
-package com.lux.study.controller;
+package com.lux.study.listener;
 
 import com.lux.study.event.TableSelectionEvent;
 
