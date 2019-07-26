@@ -30,7 +30,6 @@ public class DataStudentManager  {
 		notifyObserversUpdate();
 	}
 
-
 	public void registerObserver(DataStudentListener observer) {
 		observers.add(observer);
 	}

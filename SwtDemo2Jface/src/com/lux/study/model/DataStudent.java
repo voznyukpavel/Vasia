@@ -1,13 +1,11 @@
 package com.lux.study.model;
 
-
-
 public class DataStudent {
+	
 	private String name;
 	private String group;
 	private boolean isSWTDOne;
 	private  int id;
-
 
 	public DataStudent(String name, String group, boolean isSWTDOne,int id) {
 		super();

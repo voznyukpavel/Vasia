@@ -4,7 +4,6 @@ import java.util.EventObject;
 
 public class TableSelectionEvent extends EventObject {
 
-
 	private static final long serialVersionUID = 1L;
 	
 	private String name;
@@ -12,7 +11,6 @@ public class TableSelectionEvent extends EventObject {
 	private boolean taskDone;
 	private int ID;
 	
-
 	public TableSelectionEvent(Object source, String name, String group, boolean sWTtask,int ID) {
 		super(source);
 		this.name = name;

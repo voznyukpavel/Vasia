@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 
 import com.lux.study.controller.DataStudentManager;
@@ -220,13 +221,13 @@ public class TablePanel implements DataStudentListener {
 			if (index == 3) {
 				if (datastudent.isSWTDOne()) {
 					try {
-						image = new Image(null, (new FileInputStream("./source/CHECKED.png")));
+						image = new Image(Display.getCurrent(), (new FileInputStream("./source/CHECKED.png")));
 					} catch (FileNotFoundException e) {
 						logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
 					}
 				} else {
 					try {
-						image = new Image(null, (new FileInputStream("./source/UCHECKED.png")));
+						image = new Image(Display.getCurrent(), (new FileInputStream("./source/UCHECKED.png")));
 					} catch (FileNotFoundException e) {
 						logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
 					}
