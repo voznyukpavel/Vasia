@@ -1,10 +1,10 @@
 package com.lux.study.app;
 
-import com.lux.study.ui.MainPanel;
+import com.lux.study.ui.MainWindow;
 
 public class AppStudy {
 	public static void main(String[] args) {
-		MainPanel swts = new MainPanel();
+		MainWindow swts = new MainWindow();
 		swts.run();
 
 	}

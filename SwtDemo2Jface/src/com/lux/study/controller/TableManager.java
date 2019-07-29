@@ -6,11 +6,11 @@ import com.lux.study.event.TableSelectionEvent;
 import com.lux.study.listener.DataTableListener;
 import com.lux.study.model.DataStudent;
 
-public class DataTableManager {
+public class TableManager {
 	private ArrayList<DataTableListener> observers;
 	private DataStudent dataStudentBuffer;
 	
-	public DataTableManager() {
+	public TableManager() {
 		observers = new ArrayList<DataTableListener>();
 	}
 	

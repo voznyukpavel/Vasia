@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.lux.study.controller.DataStudentManager;
-import com.lux.study.controller.DataTableManager;
+import com.lux.study.controller.TableManager;
 import com.lux.study.event.TableSelectionEvent;
 import com.lux.study.listener.DataTableListener;
 import com.lux.study.util.TextChecker;
@@ -34,11 +34,11 @@ public class ActionPanel implements DataTableListener {
 	private Button taskSWTStatusCheckBox, newButton, saveButton, deleteButton, cancelButton;
 	private DataStudentManager dataManager;
 
-	private DataTableManager dataTableManager;
-	private MainPanel mainwindow;
+	private TableManager dataTableManager;
+	private MainWindow mainwindow;
 
-	public ActionPanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,
-			DataTableManager dataTableManager) {
+	public ActionPanel(MainWindow mainwindow, SashForm sashForm, DataStudentManager dataManager,
+			TableManager dataTableManager) {
 
 		this.dataTableManager = dataTableManager;
 		this.dataManager = dataManager;

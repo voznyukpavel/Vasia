@@ -2,27 +2,19 @@ package com.lux.study.ui;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,8 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 
-import com.lux.study.controller.DataStudentManager;
-import com.lux.study.controller.DataTableManager;
+import com.lux.study.controller.TableManager;
 import com.lux.study.event.ActionPanelEvent;
 import com.lux.study.listener.DataStudentListener;
 import com.lux.study.model.DataStudent;
@@ -40,239 +31,239 @@ import com.lux.study.storage.DataStorage;
 @SuppressWarnings("deprecation")
 public class TablePanel implements DataStudentListener {
 
-	private static final String ID = "ID";
-	private static final String NAME = "Name";
-	private static final String GROUP = "Group";
-	private static final String DONE = "SWT Done";
+    private static final String ID = "ID";
+    private static final String NAME = "Name";
+    private static final String GROUP = "Group";
+    private static final String DONE = "SWT Done";
 
-	private SashForm sashForm;
-	private Composite tableComposite;
-	private TableViewer tableViever;
-	private TableLayout tableLayout;
-	private DataStudentManager dataManager;
-	private DataTableManager dataTableManager;
-	private Table table;
-	
-	private final Logger logger = Logger.getLogger(TablePanel.class.getName());
-	
-	private static final String MESSAGE_FILE_READ_ERROR = "Error occured while read file";
+    private static final String[] COLUMNS = { ID, NAME, GROUP, DONE };
 
-	public TablePanel(MainPanel mainwindow, SashForm sashForm, DataStudentManager dataManager,
-			DataTableManager dataTableManager) {
-		super();
+    private Composite tableComposite;
+    private TableViewer tableViever;
+    private TableManager tableManager;
+    private Table table;
 
-		this.dataManager = dataManager;
-		this.dataTableManager = dataTableManager;
-		this.sashForm = sashForm;
-		initUI();
-		initListeners();
-		sighnUp();
-	}
+    private final Logger logger = Logger.getLogger(TablePanel.class.getName());
 
-	private void sighnUp() {
-		dataManager.registerObserver(this);
-	}
+    private static final String MESSAGE_FILE_READ_ERROR = "Error occured while read file";
 
-	@Override
-	public void onUpdateDataStudent(ActionPanelEvent event) {
-	
-		addNewInstance();
-	}
+    public TablePanel(Composite parentComposite, TableManager dataTableManager) {
+        super();
+        this.tableManager = dataTableManager;
+        initUI(parentComposite);
+        initListeners();
+    }
 
-	@Override
-	public void onDeleteDataStudent(ActionPanelEvent event) {
-		
-		addNewInstance();
-	}
+    @Override
+    public void onUpdateDataStudent(ActionPanelEvent event) {
+        addNewInstance();
+    }
 
-	private void addNewInstance() {
-		tableViever.setInput(DataStorage.getData());
-		tableViever.refresh();
-	}
+    @Override
+    public void onDeleteDataStudent(ActionPanelEvent event) {
+        addNewInstance();
+    }
 
-	private void initUI() {
-		GridLayout tableGridLayout = new GridLayout(1, false);
-		GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+    private void addNewInstance() {
+        tableViever.setInput(DataStorage.getData());
+        tableViever.refresh();
+    }
 
-		tableComposite = new Composite(sashForm, SWT.BORDER);
-		tableComposite.setLayout(tableGridLayout);
+    private void initUI(Composite parentComposite) {
+        GridLayout tableGridLayout = new GridLayout(1, false);
+        GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
 
-		tableViever = new TableViewer(tableComposite);
+        tableComposite = new Composite(parentComposite, SWT.BORDER);
+        tableComposite.setLayout(tableGridLayout);
 
-		tableViever.setContentProvider(new StudentContentProvider());
-		tableViever.setSorter(new StudentViewerSorter(NAME));
-		tableLayout = new TableLayout();
-		tableLayout.addColumnData(new ColumnWeightData(30, true));
-		tableLayout.addColumnData(new ColumnWeightData(30, true));
-		tableLayout.addColumnData(new ColumnWeightData(20, true));
-		tableLayout.addColumnData(new ColumnWeightData(20, true));
-		tableViever.getTable().setLayout(tableLayout);
+        tableViever = new TableViewer(tableComposite);
 
-		table = tableViever.getTable();
-		table.setSelection(SWT.FULL_SELECTION);
-		table.setLayoutData(tableGridData);
-		table.setEnabled(true);
+        tableViever.setContentProvider(ArrayContentProvider.getInstance());
+        // tableViever.setComparator(new ViewerComparator() {
+        //
+        // @Override
+        // public int compare(Viewer viewer, Object e1, Object e2) {
+        // System.out.println(viewer);
+        // return super.compare(viewer, e1, e2);
+        // }
+        //
+        // @Override
+        // public boolean isSorterProperty(Object element, String property) {
+        // System.out.println(element);
+        // return super.isSorterProperty(element, property);
+        // }
+        //
+        // @Override
+        // public void sort(Viewer viewer, Object[] elements) {
+        // System.out.println(viewer);
+        // super.sort(viewer, elements);
+        // }
+        //
+        //
+        //
+        // });
+        // tableViever.setSorter(new StudentViewerSorter(NAME));
 
-		TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViever, SWT.NONE);
-		tableViewerColumn.setLabelProvider(new TextTableColumnProvider(0));
-		tableViewerColumn.getColumn().setText(ID);
-		tableViewerColumn.getColumn().addSelectionListener((SelectionListener) new ColumnsSelectionListener(ID));
+        table = tableViever.getTable();
+        table.setSelection(SWT.FULL_SELECTION);
+        table.setLayoutData(tableGridData);
+        table.setEnabled(true);
 
-		tableViewerColumn = new TableViewerColumn(tableViever, SWT.NONE);
-		tableViewerColumn.setLabelProvider(new TextTableColumnProvider(1));
-		tableViewerColumn.getColumn().setText(NAME);
-		tableViewerColumn.getColumn().addSelectionListener((SelectionListener) new ColumnsSelectionListener(NAME));
+        createTextColumn(0, 50);
+        createTextColumn(1, 100);
+        createTextColumn(2, 100);
+        createImageColumn(3, 50);
 
-		tableViewerColumn = new TableViewerColumn(tableViever, SWT.NONE);
-		tableViewerColumn.setLabelProvider(new TextTableColumnProvider(2));
-		tableViewerColumn.getColumn().setText(GROUP);
-		tableViewerColumn.getColumn().addSelectionListener((SelectionListener) new ColumnsSelectionListener(GROUP));
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+    }
 
-		tableViewerColumn = new TableViewerColumn(tableViever, SWT.NONE);
-		tableViewerColumn.setLabelProvider(new ImageTableColumnProvider(3));
-		tableViewerColumn.getColumn().setText(DONE);
+    private void createTextColumn(int index, int width) {
+        TableViewerColumn column = createColumn(index, width);
+        column.setLabelProvider(new TextTableColumnProvider(index));
+    }
 
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
+    private void createImageColumn(int index, int width) {
+        TableViewerColumn column = createColumn(index, width);
+        column.setLabelProvider(new ImageTableColumnProvider(index));
+    }
 
-	}
+    private TableViewerColumn createColumn(int index, int width) {
+        TableViewerColumn tableViewerColumn = new TableViewerColumn(tableViever, SWT.NONE);
+        tableViewerColumn.getColumn().setText(COLUMNS[index]);
+        tableViewerColumn.getColumn().setWidth(width);
+        return tableViewerColumn;
+    }
 
-	private void initListeners() {
-		table.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				setTextsFromTable(e);
-			}			
-			
-		});
-	}
+    private void initListeners() {
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDown(MouseEvent e) {
+                clickOnTable();
+            }
 
-	private void setTextsFromTable(MouseEvent e) {
-		IStructuredSelection selection = (IStructuredSelection) tableViever.getSelection();
-		Object selections = selection.getFirstElement();
-		if (selections != null) {
-			dataTableManager.setData(selections);
-		}
-	}
+        });
+    }
 
-	private class ColumnsSelectionListener extends SelectionAdapter {
-		private String column;
+    private void clickOnTable() {
+        IStructuredSelection selection = (IStructuredSelection) tableViever.getSelection();
+        Object selections = selection.getFirstElement();
+        if (selections != null) {
+            tableManager.setData(selections);
+        }
+    }
 
-		public ColumnsSelectionListener(String column) {
-			this.column = column;
-		}
+    // private class ColumnsSelectionListener extends SelectionAdapter {
+    //
+    // public void widgetSelected(SelectionEvent event) {
+    // TableColumn tableColumn = (TableColumn) event.getSource();
+    // ((StudentViewerSorter) tableViever.getSorter()).doSort(tableColumn.getText());
+    // tableViever.refresh();
+    // }
+    // }
 
-		public void widgetSelected(SelectionEvent event) {
-			((StudentViewerSorter) tableViever.getSorter()).doSort(column);
-			tableViever.refresh();
-		}
+    private class TextTableColumnProvider extends ColumnLabelProvider {
+        private int index;
 
-	}
+        public TextTableColumnProvider(int index) {
+            super();
+            this.index = index;
+        }
 
-	private class StudentContentProvider implements IStructuredContentProvider {
-		@SuppressWarnings({ "rawtypes" })
-		public Object[] getElements(Object inputElement) {
-	
-			return ((Set) inputElement).toArray();
-		}
+        @Override
+        public String getText(Object element) {
+            DataStudent dataStudent = (DataStudent) element;
+            switch (index) {
+            case 0:
+                return Integer.toString(dataStudent.getID());
+            case 1:
+                return dataStudent.getName();
+            case 2:
+                return dataStudent.getGroup();
+            }
+            return null;
+        }
 
-		public void dispose() {
-		}
+        @Override
+        public Image getImage(Object element) {
+            return null;
+        }
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
-	}
+    }
 
-	private class TextTableColumnProvider extends ColumnLabelProvider {
-		private int index;
+    private class ImageTableColumnProvider extends ColumnLabelProvider {
 
-		public TextTableColumnProvider(int index) {
-			super();
-			this.index = index;
-		}
+        private int index;
 
-		@Override
-		public String getText(Object element) {
-			DataStudent datastudent = (DataStudent) element;
-			switch (index) {
-			case 0:
-				return Integer.toString(datastudent.getID());
-			case 1:
-				return datastudent.getName();
-			case 2:
-				return datastudent.getGroup();
-			}
-			return null;
-		}
-	}
+        public ImageTableColumnProvider(int index) {
+            super();
+            this.index = index;
+        }
 
-	private class ImageTableColumnProvider extends ColumnLabelProvider {
-		private int index;
+        @Override
+        public String getText(Object element) {
+            return null;
+        }
 
-		public ImageTableColumnProvider(int index) {
-			super();
-			this.index = index;
-		}
+        @Override
+        public Image getImage(Object element) {
+            DataStudent datastudent = (DataStudent) element;
+            Image image = null;
+            if (index == 3) {
+                if (datastudent.isSWTDOne()) {
+                    try {
+                        image = new Image(Display.getCurrent(), (new FileInputStream("./source/CHECKED.png")));
+                    } catch (FileNotFoundException e) {
+                        logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
+                    }
+                } else {
+                    try {
+                        image = new Image(Display.getCurrent(), (new FileInputStream("./source/UCHECKED.png")));
+                    } catch (FileNotFoundException e) {
+                        logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
+                    }
+                }
+            }
+            return image;
+        }
+    }
 
-		@Override
-		public Image getImage(Object element) {
-			DataStudent datastudent = (DataStudent) element;
-			Image image = null;
-			if (index == 3) {
-				if (datastudent.isSWTDOne()) {
-					try {
-						image = new Image(Display.getCurrent(), (new FileInputStream("./source/CHECKED.png")));
-					} catch (FileNotFoundException e) {
-						logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
-					}
-				} else {
-					try {
-						image = new Image(Display.getCurrent(), (new FileInputStream("./source/UCHECKED.png")));
-					} catch (FileNotFoundException e) {
-						logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
-					}
-				}
-			}
-			return image;
-		}
-	}
+    private class StudentViewerSorter extends ViewerSorter {
 
-	private class StudentViewerSorter extends ViewerSorter {
+        private static final int ASCENDING = 0;
+        private static final int DESCENDING = 1;
+        private String column;
+        private int direction;
 
-		private static final int ASCENDING = 0;
-		private static final int DESCENDING = 1;
-		private String column;
-		private int direction;
+        StudentViewerSorter(String column) {
+            this.column = column;
+        }
 
-		StudentViewerSorter(String column) {
-			this.column = column;
-		}
+        public void doSort(String column) {
+            if (column == this.column) {
+                direction = 1 - direction;
+            } else {
+                this.column = column;
+                direction = ASCENDING;
+            }
+        }
 
-		public void doSort(String column) {
-			if (column == this.column) {
-				direction = 1 - direction;
-			} else {
-				this.column = column;
-				direction = ASCENDING;
-			}
-		}
-
-		public int compare(Viewer viewer, Object e1, Object e2) {
-			int rc = 0;
-			DataStudent ds1 = (DataStudent) e1;
-			DataStudent ds2 = (DataStudent) e2;
-			switch (column) {
-			case NAME:
-				rc = collator.compare(ds1.getName(), ds2.getName());
-				break;
-			case GROUP:
-				rc = collator.compare(ds1.getGroup(), ds2.getGroup());
-				break;
-			}
-			if (direction == DESCENDING)
-				rc = -rc;
-			return rc;
-		}
-	}
+        public int compare(Viewer viewer, Object e1, Object e2) {
+            int rc = 0;
+            DataStudent ds1 = (DataStudent) e1;
+            DataStudent ds2 = (DataStudent) e2;
+            switch (column) {
+            case NAME:
+                rc = collator.compare(ds1.getName(), ds2.getName());
+                break;
+            case GROUP:
+                rc = collator.compare(ds1.getGroup(), ds2.getGroup());
+                break;
+            }
+            if (direction == DESCENDING)
+                rc = -rc;
+            return rc;
+        }
+    }
 
 }
