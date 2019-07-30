@@ -140,10 +140,9 @@ public class TablePanel implements DataStudentListener {
     }
 
     private void clickOnTable() {
-        IStructuredSelection selection = (IStructuredSelection) tableViever.getSelection();
-        Object selections = selection.getFirstElement();
-        if (selections != null) {
-            tableManager.setData(selections);
+        DataStudent selection = (DataStudent) ((IStructuredSelection) tableViever.getSelection()).getFirstElement();
+        if (selection != null) {
+            tableManager.tableSelectionChanged(selection);
         }
     }
 
