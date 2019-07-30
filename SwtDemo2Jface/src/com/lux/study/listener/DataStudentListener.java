@@ -6,6 +6,6 @@ public interface DataStudentListener {
 
 	public void onUpdateDataStudent(ActionPanelEvent event);
 	
-	public void onDeleteDataStudent(ActionPanelEvent event);
+	//public void onDeleteDataStudent(ActionPanelEvent event);
 		
 }

@@ -14,8 +14,8 @@ public class TableManager {
 		observers = new ArrayList<DataTableListener>();
 	}
 	
-	public void setDataStudentBuffer(DataStudent dataStudentBuffer) {
-		this.dataStudentBuffer = dataStudentBuffer;
+	public void setDataStudentBufferToNull() {
+		this.dataStudentBuffer = null;
 	}
 
 	public String getDataStudentBufferName() {

@@ -11,16 +11,19 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
 import com.lux.study.controller.TableManager;
 import com.lux.study.event.ActionPanelEvent;
@@ -38,6 +41,7 @@ public class TablePanel implements DataStudentListener {
 
     private static final String[] COLUMNS = { ID, NAME, GROUP, DONE };
 
+    private DataStudentsComparator comparator;
     private Composite tableComposite;
     private TableViewer tableViever;
     private TableManager tableManager;
@@ -49,6 +53,8 @@ public class TablePanel implements DataStudentListener {
 
     public TablePanel(Composite parentComposite, TableManager dataTableManager) {
         super();
+
+        comparator = new DataStudentsComparator();
         this.tableManager = dataTableManager;
         initUI(parentComposite);
         initListeners();
@@ -59,10 +65,10 @@ public class TablePanel implements DataStudentListener {
         addNewInstance();
     }
 
-    @Override
-    public void onDeleteDataStudent(ActionPanelEvent event) {
-        addNewInstance();
-    }
+    // @Override
+    // public void onDeleteDataStudent(ActionPanelEvent event) {
+    // addNewInstance();
+    // }
 
     private void addNewInstance() {
         tableViever.setInput(DataStorage.getData());
@@ -76,44 +82,17 @@ public class TablePanel implements DataStudentListener {
         tableComposite = new Composite(parentComposite, SWT.BORDER);
         tableComposite.setLayout(tableGridLayout);
 
-        tableViever = new TableViewer(tableComposite);
-
+        tableViever = new TableViewer(tableComposite,SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
         tableViever.setContentProvider(ArrayContentProvider.getInstance());
-        // tableViever.setComparator(new ViewerComparator() {
-        //
-        // @Override
-        // public int compare(Viewer viewer, Object e1, Object e2) {
-        // System.out.println(viewer);
-        // return super.compare(viewer, e1, e2);
-        // }
-        //
-        // @Override
-        // public boolean isSorterProperty(Object element, String property) {
-        // System.out.println(element);
-        // return super.isSorterProperty(element, property);
-        // }
-        //
-        // @Override
-        // public void sort(Viewer viewer, Object[] elements) {
-        // System.out.println(viewer);
-        // super.sort(viewer, elements);
-        // }
-        //
-        //
-        //
-        // });
-        // tableViever.setSorter(new StudentViewerSorter(NAME));
-
-        table = tableViever.getTable();
-        table.setSelection(SWT.FULL_SELECTION);
-        table.setLayoutData(tableGridData);
-        table.setEnabled(true);
+        tableViever.setComparator(comparator);
 
         createTextColumn(0, 50);
         createTextColumn(1, 100);
         createTextColumn(2, 100);
-        createImageColumn(3, 50);
+        createImageColumn(3, 70);
 
+        table = tableViever.getTable();
+        table.setLayoutData(tableGridData);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
     }
@@ -121,6 +100,8 @@ public class TablePanel implements DataStudentListener {
     private void createTextColumn(int index, int width) {
         TableViewerColumn column = createColumn(index, width);
         column.setLabelProvider(new TextTableColumnProvider(index));
+        if (index != 0)
+            column.getColumn().addSelectionListener(getSelectionAdapter(column.getColumn(), index));
     }
 
     private void createImageColumn(int index, int width) {
@@ -141,8 +122,21 @@ public class TablePanel implements DataStudentListener {
             public void mouseDown(MouseEvent e) {
                 clickOnTable();
             }
-
         });
+    }
+
+    private SelectionAdapter getSelectionAdapter(TableColumn column, int index) {
+        SelectionAdapter selectionAdapter = new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                comparator.setColumn(index);
+                int dir = comparator.getDirection();
+                tableViever.getTable().setSortDirection(dir);
+                tableViever.getTable().setSortColumn(column);
+                tableViever.refresh();
+            }
+        };
+        return selectionAdapter;
     }
 
     private void clickOnTable() {
@@ -152,15 +146,6 @@ public class TablePanel implements DataStudentListener {
             tableManager.setData(selections);
         }
     }
-
-    // private class ColumnsSelectionListener extends SelectionAdapter {
-    //
-    // public void widgetSelected(SelectionEvent event) {
-    // TableColumn tableColumn = (TableColumn) event.getSource();
-    // ((StudentViewerSorter) tableViever.getSorter()).doSort(tableColumn.getText());
-    // tableViever.refresh();
-    // }
-    // }
 
     private class TextTableColumnProvider extends ColumnLabelProvider {
         private int index;
@@ -228,42 +213,48 @@ public class TablePanel implements DataStudentListener {
         }
     }
 
-    private class StudentViewerSorter extends ViewerSorter {
-
-        private static final int ASCENDING = 0;
+    private class DataStudentsComparator extends ViewerComparator {
         private static final int DESCENDING = 1;
-        private String column;
-        private int direction;
+        private int direction = DESCENDING;
+        private int propertyIndex;
 
-        StudentViewerSorter(String column) {
-            this.column = column;
+        public DataStudentsComparator() {
+            this.propertyIndex = 0;
+            direction = DESCENDING;
         }
 
-        public void doSort(String column) {
-            if (column == this.column) {
+        public int getDirection() {
+            return direction == 1 ? SWT.DOWN : SWT.UP;
+        }
+
+        public void setColumn(int column) {
+            if (column == this.propertyIndex) {
                 direction = 1 - direction;
             } else {
-                this.column = column;
-                direction = ASCENDING;
+                this.propertyIndex = column;
+                direction = DESCENDING;
             }
         }
 
+        @Override
         public int compare(Viewer viewer, Object e1, Object e2) {
+            DataStudent dataStudent1 = (DataStudent) e1;
+            DataStudent dataStudent2 = (DataStudent) e2;
             int rc = 0;
-            DataStudent ds1 = (DataStudent) e1;
-            DataStudent ds2 = (DataStudent) e2;
-            switch (column) {
-            case NAME:
-                rc = collator.compare(ds1.getName(), ds2.getName());
+            switch (propertyIndex) {
+            case 1:
+                rc = dataStudent1.getName().compareTo(dataStudent2.getName());
                 break;
-            case GROUP:
-                rc = collator.compare(ds1.getGroup(), ds2.getGroup());
+            case 2:
+                rc = dataStudent1.getGroup().compareTo(dataStudent2.getGroup());
                 break;
+            default:
+                rc = 0;
             }
-            if (direction == DESCENDING)
+            if (direction == DESCENDING) {
                 rc = -rc;
+            }
             return rc;
         }
     }
-
 }

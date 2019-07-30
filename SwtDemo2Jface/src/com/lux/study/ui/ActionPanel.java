@@ -213,7 +213,7 @@ public class ActionPanel implements DataTableListener {
 		}
 
 		saveButton.setEnabled(false);
-		dataTableManager.setDataStudentBuffer(null);
+		dataTableManager.setDataStudentBufferToNull();
 	}
 
 	void delete() {
@@ -223,7 +223,7 @@ public class ActionPanel implements DataTableListener {
 			dataManager.deleteStudent(dataTableManager.getDataStudentBufferId());
 
 			deleteButton.setEnabled(false);
-			dataTableManager.setDataStudentBuffer(null);
+			dataTableManager.setDataStudentBufferToNull();
 			clearFildsAndSWTStatus();
 
 		}

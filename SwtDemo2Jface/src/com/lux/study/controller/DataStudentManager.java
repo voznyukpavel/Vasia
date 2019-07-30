@@ -22,7 +22,7 @@ public class DataStudentManager  {
 
 	public void deleteStudent(int idStudent) {
 		DataStorage.removeDataStudent(idStudent);
-		notifyObserversDelete();
+		 notifyObserversUpdate();
 	}
 	
 	public void updateStudent(String name,String group,boolean SWTDone,int idStudent) {
@@ -34,12 +34,12 @@ public class DataStudentManager  {
 		observers.add(observer);
 	}
 
-	public void notifyObserversDelete() {
-		for (int i = 0; i < observers.size(); i++) {
-			DataStudentListener observer = (DataStudentListener) observers.get(i);
-			observer.onDeleteDataStudent(new ActionPanelEvent(this));
-		}
-	}
+//	public void notifyObserversDelete() {
+//		for (int i = 0; i < observers.size(); i++) {
+//			DataStudentListener observer = (DataStudentListener) observers.get(i);
+//			observer.onDeleteDataStudent(new ActionPanelEvent(this));
+//		}
+//	}
 
 	public void notifyObserversUpdate() {
 		for (int i = 0; i < observers.size(); i++) {

@@ -30,14 +30,12 @@ public class MainWindow extends ApplicationWindow {
 
         dataManager = new DataStudentManager();
         dataTableManager = new TableManager();
-
     }
 
     protected Control createContents(Composite parent) {
 
         sashForm = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
-
-        
+   
         TablePanel tablePanel = new TablePanel(sashForm, dataTableManager);
         dataManager.registerObserver(tablePanel);
         
@@ -59,13 +57,13 @@ public class MainWindow extends ApplicationWindow {
     }
 
     private MenuManager createFileMenu() {
-        MenuManager menu = new MenuManager("&File", "Id01");
+        MenuManager menu = new MenuManager("&File");
         menu.add(new ExitAction(this));
         return menu;
     }
 
     private MenuManager createEditMenu() {
-        MenuManager menu = new MenuManager("&Edit", "Id02");
+        MenuManager menu = new MenuManager("&Edit");
 
         SaveAction saveAction = new SaveAction();
         DeleteAction deleteAction = new DeleteAction();
@@ -88,13 +86,13 @@ public class MainWindow extends ApplicationWindow {
     }
 
     private MenuManager createHelpMenu() {
-        MenuManager menu = new MenuManager("&Help", "Id03");
+        MenuManager menu = new MenuManager("&Help");
         menu.add(new AboutAction(this));
         return menu;
     }
 
     private void shellSets() {
-        getShell().setText("Vasya");
+        getShell().setText("Vasia");
         getShell().setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
         getShell().setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     }
@@ -182,5 +180,4 @@ public class MainWindow extends ApplicationWindow {
                     "The version of this application is 1.0");
         }
     }
-
 }
