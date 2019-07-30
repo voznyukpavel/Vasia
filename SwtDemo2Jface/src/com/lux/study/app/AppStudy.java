@@ -6,7 +6,6 @@ public class AppStudy {
 	public static void main(String[] args) {
 		MainWindow swts = new MainWindow();
 		swts.run();
-
 	}
 
 }

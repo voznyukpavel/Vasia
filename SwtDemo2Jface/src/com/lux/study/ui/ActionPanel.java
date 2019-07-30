@@ -26,7 +26,6 @@ public class ActionPanel implements DataTableListener {
     private static final String GROUP = "Group";
     private static final String SWT_TASK_DONE = "SWT task done";
 
-    private SashForm sashForm;
     private Composite inputDataComposite;
     private Label nameLabelTitle, groupLabelTitel, taskSWTStatusLabel;
     private Text nameTextValue, groupTextValue;
@@ -40,27 +39,27 @@ public class ActionPanel implements DataTableListener {
     private ActionPanelState state = ActionPanelState.START;
     private boolean isDirty;
 
-    public ActionPanel(MainWindow mainWindow, SashForm sashForm, DataStudentManager dataManager,
+    public ActionPanel(MainWindow mainWindow,Composite parentComposite, DataStudentManager dataManager,
             TableManager dataTableManager) {
 
         this.dataTableManager = dataTableManager;
         this.dataManager = dataManager;
         this.mainWindow = mainWindow;
-        this.sashForm = sashForm;
-        initUI();
+        
+        initUI(parentComposite);
         setControlsEnable();
         initListeners();
         signUpToTable();
     }
 
-    private void initUI() {
+    private void initUI( Composite parentComposite) {
         GridLayout inputDataGridLayout = new GridLayout(4, false);
         inputDataGridLayout.marginTop = 15;
         inputDataGridLayout.marginLeft = 15;
         inputDataGridLayout.marginRight = 15;
         inputDataGridLayout.verticalSpacing = 20;
 
-        inputDataComposite = new Composite(sashForm, SWT.BORDER);
+        inputDataComposite = new Composite(parentComposite, SWT.BORDER);
         inputDataComposite.setLayout(inputDataGridLayout);
 
         GridData gridDataLabel = new GridData();
@@ -131,6 +130,7 @@ public class ActionPanel implements DataTableListener {
             cancelButton.setEnabled(false);
             setInputControlsEnable(false);
             break;
+
         case NEW:
             newButton.setEnabled(false);
             saveButton.setEnabled(true);
@@ -138,6 +138,7 @@ public class ActionPanel implements DataTableListener {
             cancelButton.setEnabled(true);
             setInputControlsEnable(true);
             break;
+
         case SELECTED:
             newButton.setEnabled(true);
             saveButton.setEnabled(isDirty);
@@ -225,8 +226,8 @@ public class ActionPanel implements DataTableListener {
         case NEW:
         case SELECTED:
             if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
-                    // TODO: implement
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")&&isDataValid()) {
+                    updateDataStudent();
                 }
             } else {
                 setState(ActionPanelState.SELECTED);
@@ -253,8 +254,8 @@ public class ActionPanel implements DataTableListener {
             break;
         case SELECTED:
             if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
-                    // TODO: implement
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")&&isDataValid()) {
+                    updateDataStudent();
                 }
             } else {
                 setState(ActionPanelState.NEW);
@@ -277,10 +278,8 @@ public class ActionPanel implements DataTableListener {
                         taskSWTStatusCheckBox.getSelection(), -1);
                 break;
             case SELECTED:
-                dataManager.updateStudent(nameTextValue.getText(), groupTextValue.getText(),
-                        taskSWTStatusCheckBox.getSelection(), currentStudent.getID());
+                updateDataStudent();
                 break;
-
             default:
                 fatalStateError(state);
             }
@@ -323,6 +322,10 @@ public class ActionPanel implements DataTableListener {
         groupTextValue.setText("");
         taskSWTStatusCheckBox.setSelection(false);
     }
+    private void updateDataStudent() {
+        dataManager.updateStudent(nameTextValue.getText(), groupTextValue.getText(),
+                taskSWTStatusCheckBox.getSelection(), currentStudent.getID());
+    }
 
     private boolean areTextFieldsEmpty() {
         if (nameTextValue.getText().isEmpty() || groupTextValue.getText().isEmpty()) {
@@ -336,7 +339,7 @@ public class ActionPanel implements DataTableListener {
             MessageDialog.openError(mainWindow.getShell(), "Error", "Empty data");
             return false;
         }
-        if (!TextChecker.checker(nameTextValue.getText(), groupTextValue.getText())) {
+        if (!TextChecker.nameChecker(nameTextValue.getText())&&TextChecker.groupChecker(groupTextValue.getText())){
             MessageDialog.openError(mainWindow.getShell(), "Error", "Wrong data");
             return false;
         }

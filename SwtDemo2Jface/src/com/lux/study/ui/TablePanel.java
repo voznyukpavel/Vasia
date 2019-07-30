@@ -31,7 +31,7 @@ import com.lux.study.listener.DataStudentListener;
 import com.lux.study.model.DataStudent;
 import com.lux.study.storage.DataStorage;
 
-@SuppressWarnings("deprecation")
+
 public class TablePanel implements DataStudentListener {
 
     private static final String ID = "ID";
