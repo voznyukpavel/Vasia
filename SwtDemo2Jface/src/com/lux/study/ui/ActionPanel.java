@@ -39,20 +39,20 @@ public class ActionPanel implements DataTableListener {
     private ActionPanelState state = ActionPanelState.START;
     private boolean isDirty;
 
-    public ActionPanel(MainWindow mainWindow,Composite parentComposite, DataStudentManager dataManager,
+    public ActionPanel(MainWindow mainWindow, Composite parentComposite, DataStudentManager dataManager,
             TableManager dataTableManager) {
 
         this.dataTableManager = dataTableManager;
         this.dataManager = dataManager;
         this.mainWindow = mainWindow;
-        
+
         initUI(parentComposite);
         setControlsEnable();
         initListeners();
         signUpToTable();
     }
 
-    private void initUI( Composite parentComposite) {
+    private void initUI(Composite parentComposite) {
         GridLayout inputDataGridLayout = new GridLayout(4, false);
         inputDataGridLayout.marginTop = 15;
         inputDataGridLayout.marginLeft = 15;
@@ -226,7 +226,9 @@ public class ActionPanel implements DataTableListener {
         case NEW:
         case SELECTED:
             if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")&&isDataValid()) {
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")
+                        && isDataValid()) {
+                    // TODO: если не валидные данные то селекшен должен быть отменен
                     updateDataStudent();
                 }
             } else {
@@ -248,13 +250,15 @@ public class ActionPanel implements DataTableListener {
     }
 
     void createNew() {
+        // TODO: При создани нового убирать селешен в таблице
         switch (state) {
         case START:
             setState(ActionPanelState.NEW);
             break;
         case SELECTED:
             if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")&&isDataValid()) {
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")
+                        && isDataValid()) {
                     updateDataStudent();
                 }
             } else {
@@ -322,6 +326,7 @@ public class ActionPanel implements DataTableListener {
         groupTextValue.setText("");
         taskSWTStatusCheckBox.setSelection(false);
     }
+
     private void updateDataStudent() {
         dataManager.updateStudent(nameTextValue.getText(), groupTextValue.getText(),
                 taskSWTStatusCheckBox.getSelection(), currentStudent.getID());
@@ -339,7 +344,7 @@ public class ActionPanel implements DataTableListener {
             MessageDialog.openError(mainWindow.getShell(), "Error", "Empty data");
             return false;
         }
-        if (!TextChecker.nameChecker(nameTextValue.getText())&&TextChecker.groupChecker(groupTextValue.getText())){
+        if (!TextChecker.nameChecker(nameTextValue.getText()) && TextChecker.groupChecker(groupTextValue.getText())) {
             MessageDialog.openError(mainWindow.getShell(), "Error", "Wrong data");
             return false;
         }
@@ -350,6 +355,9 @@ public class ActionPanel implements DataTableListener {
         return MessageDialog.openConfirm(mainWindow.getShell(), title, message);
     }
 
+    
+    // TODO: убирать слекшен после сейва
+    
     private class TextModifyListener implements ModifyListener {
         @Override
         public void modifyText(ModifyEvent e) {
