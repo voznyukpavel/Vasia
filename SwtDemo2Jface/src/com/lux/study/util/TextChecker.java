@@ -10,7 +10,7 @@ public class TextChecker {
 	}
 
 	private static final String LATERS_ONLY_REGULAR_EXPRESSION = "[A-Za-z ]+";
-	private static final String lATERS_NUMBERS_SIGNS_REGULAR_EXPRESSION = "[A-Za-z0-9_.]+";
+	private static final String LATERS_NUMBERS_SIGNS_REGULAR_EXPRESSION = "[A-Za-z0-9_.]+";
 
 	public static boolean nameChecker(String name) {
 		if (checkTextFild(name, LATERS_ONLY_REGULAR_EXPRESSION)) {
@@ -20,7 +20,7 @@ public class TextChecker {
 	}
 	
 	 public static boolean groupChecker( String group) {
-	     if (checkTextFild(group, lATERS_NUMBERS_SIGNS_REGULAR_EXPRESSION)) {
+	     if (checkTextFild(group, LATERS_NUMBERS_SIGNS_REGULAR_EXPRESSION)) {
 	       return true;
 	     }
 	     return false;

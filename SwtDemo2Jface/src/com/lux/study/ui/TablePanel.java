@@ -2,6 +2,7 @@ package com.lux.study.ui;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -26,7 +28,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.lux.study.controller.TableManager;
-import com.lux.study.event.ActionPanelEvent;
 import com.lux.study.listener.DataStudentListener;
 import com.lux.study.model.DataStudent;
 import com.lux.study.storage.DataStorage;
@@ -61,14 +62,10 @@ public class TablePanel implements DataStudentListener {
     }
 
     @Override
-    public void onUpdateDataStudent(ActionPanelEvent event) {
+    public void onUpdateDataStudent() {
+        table.deselectAll();
         addNewInstance();
     }
-
-    // @Override
-    // public void onDeleteDataStudent(ActionPanelEvent event) {
-    // addNewInstance();
-    // }
 
     private void addNewInstance() {
         tableViever.setInput(DataStorage.getData());
@@ -142,6 +139,7 @@ public class TablePanel implements DataStudentListener {
     private void clickOnTable() {
         DataStudent selection = (DataStudent) ((IStructuredSelection) tableViever.getSelection()).getFirstElement();
         if (selection != null) {
+           
             tableManager.tableSelectionChanged(selection);
         }
     }
@@ -172,7 +170,6 @@ public class TablePanel implements DataStudentListener {
         public Image getImage(Object element) {
             return null;
         }
-
     }
 
     private class ImageTableColumnProvider extends ColumnLabelProvider {

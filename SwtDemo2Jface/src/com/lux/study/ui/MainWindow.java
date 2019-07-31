@@ -4,19 +4,25 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+
 import org.eclipse.jface.dialogs.MessageDialog;
+
 import org.eclipse.jface.window.ApplicationWindow;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 
 import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.TableManager;
 
 public class MainWindow extends ApplicationWindow {
-    
+
     private static final int WINDOW_WIDTH = 770;
     private static final int WINDOW_HEIGHT = 300;
 
@@ -35,12 +41,11 @@ public class MainWindow extends ApplicationWindow {
     protected Control createContents(Composite parent) {
 
         sashForm = new SashForm(parent, SWT.HORIZONTAL | SWT.SMOOTH);
-   
+
         TablePanel tablePanel = new TablePanel(sashForm, dataTableManager);
         dataManager.registerObserver(tablePanel);
-        
-        actionPanel = new ActionPanel(this, sashForm, dataManager, dataTableManager);
 
+        actionPanel = new ActionPanel(this, sashForm, dataManager, dataTableManager);
         shellSets();
         return parent;
     }
@@ -58,18 +63,22 @@ public class MainWindow extends ApplicationWindow {
 
     private MenuManager createFileMenu() {
         MenuManager menu = new MenuManager("&File");
+        menu.add(new SaveToFileAction());
+        menu.add(new LoadFromFileAction());
+        menu.add(new Separator());
         menu.add(new ExitAction(this));
+
         return menu;
     }
 
     private MenuManager createEditMenu() {
         MenuManager menu = new MenuManager("&Edit");
-
+        NewAction newAction = new NewAction();
         SaveAction saveAction = new SaveAction();
         DeleteAction deleteAction = new DeleteAction();
         CancelAction cancelAction = new CancelAction();
 
-        menu.add(new NewAction());
+        menu.add(newAction);
         menu.add(saveAction);
         menu.add(deleteAction);
         menu.add(cancelAction);
@@ -77,6 +86,8 @@ public class MainWindow extends ApplicationWindow {
         menu.addMenuListener(new IMenuListener() {
             @Override
             public void menuAboutToShow(IMenuManager manager) {
+
+                newAction.setEnabled(actionPanel.isEnabledNewButton());
                 saveAction.setEnabled(actionPanel.isEnabledSaveButton());
                 deleteAction.setEnabled(actionPanel.isEnabledDeleteButton());
                 cancelAction.setEnabled(actionPanel.isEnabledCancelButton());
@@ -164,6 +175,40 @@ public class MainWindow extends ApplicationWindow {
                 awin.close();
             }
         }
+    }
+
+    private class SaveToFileAction extends Action {
+
+        public SaveToFileAction() {
+            super("SaveToFile", AS_PUSH_BUTTON);
+        }
+
+        public void run() {
+            String path = createFileDialog("Save", SWT.SAVE);
+            dataManager.saveDataStorageToFile(path);
+        }
+    }
+
+    private class LoadFromFileAction extends Action {
+
+        public LoadFromFileAction() {
+            super("LoadFromFile", AS_PUSH_BUTTON);
+        }
+
+        public void run() {
+            String path =createFileDialog("Open", SWT.OPEN);
+            dataManager.getDataFromFileToDataStorage(path);
+        }
+    }
+
+    private String createFileDialog(String action, int swtType) {
+        
+        FileDialog fd = new FileDialog(getShell(), swtType);
+        fd.setText(action);
+      //  fd.setFilterPath("C:/");
+        String[] filterExt = { "DataStudent.txt" };
+        fd.setFilterExtensions(filterExt);
+        return  fd.open();
     }
 
     private class AboutAction extends Action {

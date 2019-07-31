@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 import com.lux.study.util.TextChecker;
-class TastFieldsValidator {
+class TestNameValidator {
 
 	@Test
 	void testcheckTextFildNumbersAndSymbols() {

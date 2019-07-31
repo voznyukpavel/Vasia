@@ -2,7 +2,7 @@ package com.lux.study.controller;
 
 import java.util.ArrayList;
 
-import com.lux.study.event.ActionPanelEvent;
+
 import com.lux.study.listener.DataStudentListener;
 import com.lux.study.model.DataStudent;
 import com.lux.study.storage.DataStorage;
@@ -24,6 +24,15 @@ public class DataStudentManager {
         DataStorage.removeDataStudent(idStudent);
         notifyObserversUpdate();
     }
+    
+    public void saveDataStorageToFile(String path) {
+        
+    }
+    
+    public void getDataFromFileToDataStorage(String path) {
+        
+        notifyObserversUpdate();
+    }
 
     public void updateStudent(String name, String group, boolean SWTDone, int idStudent) {
         DataStorage.updateDataStudent(idStudent, new DataStudent(name, group, SWTDone, idStudent));
@@ -33,13 +42,6 @@ public class DataStudentManager {
     public void registerObserver(DataStudentListener observer) {
         observers.add(observer);
     }
-
-    // public void notifyObserversDelete() {
-    // for (int i = 0; i < observers.size(); i++) {
-    // DataStudentListener observer = (DataStudentListener) observers.get(i);
-    // observer.onDeleteDataStudent(new ActionPanelEvent(this));
-    // }
-    // }
 
     // TODO: File Save, File Load, через диалог выбора файла и папки
 
