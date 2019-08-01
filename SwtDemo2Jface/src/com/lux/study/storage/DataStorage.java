@@ -10,7 +10,7 @@ import com.lux.study.model.DataStudent;
 public class DataStorage {
 	
 	private static Map<Integer, DataStudent> students = new HashMap<Integer, DataStudent>();
-	private static int counter = 0;
+	private static int counter = 0; // TODO: re-implement Id generation
 
 	private DataStorage() {
 

@@ -63,10 +63,10 @@ public class TablePanel implements DataStudentListener {
     @Override
     public void onUpdateDataStudent() {
         table.deselectAll();
-        addNewInstance();
+        setDataToTable();
     }
 
-    private void addNewInstance() {
+    private void setDataToTable() {
         tableViever.setInput(DataStorage.getData());
         tableViever.refresh();
     }

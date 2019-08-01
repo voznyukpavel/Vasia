@@ -232,17 +232,17 @@ public class ActionPanel implements DataTableListener {
             break;
         case NEW:
         case SELECTED:
-            if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")
-                        && isDataValid()) {
-                    // TODO: если не валидные данные то селекшен должен быть отменен
+            if (isDirty && confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
+                if (isDataValid()) {
                     updateDataStudent();
+                } else {
+                    // TODO: if data is not valid we should cancel new selection
+                    return;
                 }
-            } else {
-                setState(ActionPanelState.SELECTED);
-                currentStudent = dataStudent;
-                setInputValues();
-            }
+            } 
+            setState(ActionPanelState.SELECTED);
+            currentStudent = dataStudent;
+            setInputValues();
             break;
         default:
             fatalStateError(state);
@@ -257,7 +257,7 @@ public class ActionPanel implements DataTableListener {
     }
 
     void createNew() {
-        // TODO: При создани нового убирать селешен в таблице
+        // TODO: When create new then cancel selection in the table
         switch (state) {
         case START:
             setState(ActionPanelState.NEW);
@@ -362,9 +362,6 @@ public class ActionPanel implements DataTableListener {
         return MessageDialog.openConfirm(mainWindow.getShell(), title, message);
     }
 
-    
-    // TODO: убирать слекшен после сейва
-    
     private class TextModifyListener implements ModifyListener {
         @Override
         public void modifyText(ModifyEvent e) {

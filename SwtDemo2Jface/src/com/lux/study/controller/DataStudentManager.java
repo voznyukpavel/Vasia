@@ -44,8 +44,6 @@ public class DataStudentManager {
         observers.add(observer);
     }
 
-    // TODO: File Save, File Load, через диалог выбора файла и папки
-
     public void notifyObserversUpdate() {
         for (int i = 0; i < observers.size(); i++) {
             DataStudentListener observer = (DataStudentListener) observers.get(i);

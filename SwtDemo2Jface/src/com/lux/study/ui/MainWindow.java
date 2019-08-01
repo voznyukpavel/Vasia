@@ -25,7 +25,6 @@ public class MainWindow extends ApplicationWindow {
 
     private static final int WINDOW_WIDTH = 770;
     private static final int WINDOW_HEIGHT = 300;
-    private static final String FILE_NAME="DataStudent.txt";
 
     private SashForm sashForm;
     private ActionPanel actionPanel;
@@ -225,6 +224,9 @@ public class MainWindow extends ApplicationWindow {
       //  String[] filterExt = {FILE_NAME};
        // fd.setFilterExtensions(filterExt);
       //  System.out.println(fd.open());
+        // TODO: if press cancel
+        // TODO: check if file exists
+        // TODO: check if file correct
         return  fd.open();
     }
 }

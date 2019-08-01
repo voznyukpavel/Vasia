@@ -24,12 +24,13 @@ public class DataFileManager {
 
     private static Map<Integer, DataStudent> map;
 
-    public static void saveDataStorageToFile(String path,Map<Integer, DataStudent> map) {
+    public static void saveDataStorageToFile(String path, Map<Integer, DataStudent> map) {
         File file = new File(path);
         byte buf[] = null;
         String data = "";
-        for (Map.Entry<Integer, DataStudent> entry : map.entrySet()) {
-            data += (entry.getValue().toString() + "\n");
+        for (DataStudent entry : map.values()) {
+            // TODO: implement new method to serialize data to String
+            data += (entry.toString() + "\n");
         }
         buf = data.getBytes();
         try (OutputStream out = new FileOutputStream(file)) {
@@ -38,10 +39,11 @@ public class DataFileManager {
             logger.log(Level.SEVERE, MESSAGE_FILE_WRITE_ERROR, e);
         }
     }
-    
+
+    // TODO: Separate methods
     public static Map<Integer, DataStudent> getDataFromFileToDataStorage(String path) {
         File file = new File(path);
-        map=new HashMap<Integer, DataStudent>();
+        map = new HashMap<Integer, DataStudent>();
         String data = "";
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while ((data = br.readLine()) != null) {
