@@ -49,7 +49,6 @@ public class TablePanel implements DataStudentListener {
     private Table table;
 
     private final Logger logger = Logger.getLogger(TablePanel.class.getName());
-
     private static final String MESSAGE_FILE_READ_ERROR = "Error occured while read file";
 
     public TablePanel(Composite parentComposite, TableManager dataTableManager) {

@@ -79,7 +79,7 @@ public class DataStudent {
 
 	@Override
 	public String toString() {
-		return name + " " + group;
+		return id+" "+ name + " " + group+" "+isSWTDOne;
 	}
 
 }

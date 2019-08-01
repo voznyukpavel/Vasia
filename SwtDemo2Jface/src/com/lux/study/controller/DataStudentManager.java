@@ -2,10 +2,11 @@ package com.lux.study.controller;
 
 import java.util.ArrayList;
 
-
 import com.lux.study.listener.DataStudentListener;
 import com.lux.study.model.DataStudent;
 import com.lux.study.storage.DataStorage;
+import com.lux.study.util.DataFileManager;
+
 
 public class DataStudentManager {
 
@@ -24,13 +25,13 @@ public class DataStudentManager {
         DataStorage.removeDataStudent(idStudent);
         notifyObserversUpdate();
     }
-    
+
     public void saveDataStorageToFile(String path) {
-        
+        DataFileManager.saveDataStorageToFile(path,DataStorage.getStudents());
     }
     
     public void getDataFromFileToDataStorage(String path) {
-        
+        DataStorage.setStudents(DataFileManager.getDataFromFileToDataStorage(path));
         notifyObserversUpdate();
     }
 

@@ -25,6 +25,7 @@ public class MainWindow extends ApplicationWindow {
 
     private static final int WINDOW_WIDTH = 770;
     private static final int WINDOW_HEIGHT = 300;
+    private static final String FILE_NAME="DataStudent.txt";
 
     private SashForm sashForm;
     private ActionPanel actionPanel;
@@ -201,16 +202,6 @@ public class MainWindow extends ApplicationWindow {
         }
     }
 
-    private String createFileDialog(String action, int swtType) {
-        
-        FileDialog fd = new FileDialog(getShell(), swtType);
-        fd.setText(action);
-      //  fd.setFilterPath("C:/");
-        String[] filterExt = { "DataStudent.txt" };
-        fd.setFilterExtensions(filterExt);
-        return  fd.open();
-    }
-
     private class AboutAction extends Action {
 
         ApplicationWindow awin;
@@ -224,5 +215,16 @@ public class MainWindow extends ApplicationWindow {
             MessageDialog.openInformation(awin.getShell(), "About this program",
                     "The version of this application is 1.0");
         }
+    }
+    
+    private String createFileDialog(String action, int swtType) {
+        
+        FileDialog fd = new FileDialog(getShell(), swtType);
+        fd.setText(action);
+      //  fd.setFilterPath("C:/");
+      //  String[] filterExt = {FILE_NAME};
+       // fd.setFilterExtensions(filterExt);
+      //  System.out.println(fd.open());
+        return  fd.open();
     }
 }

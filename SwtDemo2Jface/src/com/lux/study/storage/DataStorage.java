@@ -16,12 +16,24 @@ public class DataStorage {
 
 	}
 
+	public static void setStudents(Map<Integer, DataStudent> students) {
+        DataStorage.students = students;
+    }
+
+    public static Map<Integer, DataStudent> getStudents(){
+	    return students;
+	}
+	
 	public static void appendDataStudent(DataStudent dataStudent) {
 		++counter;
 		dataStudent.setID(counter);
 		students.put(counter, dataStudent);
 	}
 
+  public static void appendDataStudent(int id, DataStudent dataStudent) {
+      students.put(id, dataStudent);
+  }
+	
 	public static void removeDataStudent(int idStudent) {
 		students.remove(idStudent);
 	}
