@@ -35,7 +35,7 @@ public class DataStudentManager {
     
     public void getDataFromFileToDataStorage(File file) throws FileNotFoundException, Exception {
         DataStorage.setStudents(DataFileManager.getDataFromFileToDataStorage(file));
-        notifyObserversUpdate();
+        notifyObserversLoaded();
     }
 
     public void updateStudent(String name, String group, boolean SWTDone, int idStudent) {
@@ -45,6 +45,13 @@ public class DataStudentManager {
 
     public void registerObserver(DataStudentListener observer) {
         observers.add(observer);
+    }
+    
+    public void notifyObserversLoaded() {
+        for (int i = 0; i < observers.size(); i++) {
+            DataStudentListener observer = (DataStudentListener) observers.get(i);
+            observer.loaded();
+        }
     }
 
     public void notifyObserversUpdate() {

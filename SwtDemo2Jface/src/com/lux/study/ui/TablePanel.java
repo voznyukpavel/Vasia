@@ -70,7 +70,16 @@ public class TablePanel implements DataStudentListener {
     public void deselectTable() {
         table.deselectAll();
     }
+    
+    @Override
+    public void loaded() {
+        setDataToTable();
+        TableItem[] tableItems = table.getItems();
+        table.setSelection(tableItems[0]);
+       clickOnTable();
+    }
 
+    
     @Override
     public void findRow(int row) {
         TableItem[] tableItems = table.getItems();
@@ -269,5 +278,8 @@ public class TablePanel implements DataStudentListener {
             return rc;
         }
     }
+
+
+
 
 }

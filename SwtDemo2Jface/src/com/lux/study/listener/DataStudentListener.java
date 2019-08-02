@@ -8,4 +8,6 @@ public interface DataStudentListener {
 
     public void findRow(int id);
 
+    public void loaded();
+
 }
