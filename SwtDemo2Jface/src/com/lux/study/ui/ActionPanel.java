@@ -240,7 +240,7 @@ public class ActionPanel implements DataTableListener {
                     currentStudent = dataStudent;
                     dataManager.findStudentById(currentStudent.getID());
                 } else {
-                    // TODO: You know
+                    dataManager.deselectTablePanel();
                     if (currentStudent != null) {
                         dataManager.findStudentById(currentStudent.getID());
                     }
@@ -261,10 +261,10 @@ public class ActionPanel implements DataTableListener {
 
     private void setInputValues() {
         if (currentStudent != null) {
-        nameTextValue.setText(currentStudent.getName());
-        groupTextValue.setText(currentStudent.getGroup());
-        taskSWTStatusCheckBox.setSelection(currentStudent.isSWTDOne());
-        isDirty = false;
+            nameTextValue.setText(currentStudent.getName());
+            groupTextValue.setText(currentStudent.getGroup());
+            taskSWTStatusCheckBox.setSelection(currentStudent.isSWTDOne());
+            isDirty = false;
         }
     }
 
@@ -277,8 +277,7 @@ public class ActionPanel implements DataTableListener {
             break;
         case SELECTED:
             if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record ?")
-                        && isDataValid()) {
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record ?") && isDataValid()) {
                     updateDataStudent();
                 }
             } else {
@@ -337,17 +336,19 @@ public class ActionPanel implements DataTableListener {
             setInputValues();
             break;
         case START:
-           
+
             break;
         default:
             fatalStateError(state);
-        } 
+        }
 
     }
-  //  void setLoadState() {
-//        setState(ActionPanelState.START);
- //       currentStudent=null;
- //   }
+
+    void setLoadState() {
+        setState(ActionPanelState.NEW);
+        isDirty = false;
+        currentStudent = null;
+    }
 
     private void clearFieldsAndSWTStatus() {
         nameTextValue.setText("");
@@ -356,9 +357,9 @@ public class ActionPanel implements DataTableListener {
     }
 
     private void updateDataStudent() {
-        if(currentStudent!=null) {
-        dataManager.updateStudent(nameTextValue.getText(), groupTextValue.getText(),
-                taskSWTStatusCheckBox.getSelection(), currentStudent.getID());
+        if (currentStudent != null) {
+            dataManager.updateStudent(nameTextValue.getText(), groupTextValue.getText(),
+                    taskSWTStatusCheckBox.getSelection(), currentStudent.getID());
         }
     }
 

@@ -221,7 +221,7 @@ public class MainWindow extends ApplicationWindow {
                 System.out.println(file);
                 if (file != null) {
                     dataManager.getDataFromFileToDataStorage(file);
-                 //   actionPanel.setLoadState();
+                   actionPanel.setLoadState();
                 }
             } catch (FileNotFoundException e) {
                 MessageDialog.openError(awin.getShell(), "I/O Error", MESSAGE_FILE_NOT_FOUND_ERROR);
