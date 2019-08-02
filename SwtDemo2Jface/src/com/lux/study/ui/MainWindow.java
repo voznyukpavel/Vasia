@@ -169,7 +169,9 @@ public class MainWindow extends ApplicationWindow {
         }
 
         public void run() {
-            actionPanel.save();
+            if (actionPanel.tryToSave()) {
+                actionPanel.setState(ActionPanelState.START);
+            }
         }
     }
 

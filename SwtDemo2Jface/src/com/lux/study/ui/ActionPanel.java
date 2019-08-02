@@ -142,7 +142,7 @@ public class ActionPanel implements DataTableListener {
             break;
 
         case SELECTED:
-            newButton.setEnabled(true);
+            newButton.setEnabled(false);
             saveButton.setEnabled(isDirty);
             deleteButton.setEnabled(true);
             cancelButton.setEnabled(isDirty);
@@ -176,7 +176,9 @@ public class ActionPanel implements DataTableListener {
 
         saveButton.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                save();
+                if (tryToSave()) {
+                    setState(ActionPanelState.START);
+                }
             }
         });
 
@@ -227,34 +229,47 @@ public class ActionPanel implements DataTableListener {
     public void update(DataStudent dataStudent) {
         switch (state) {
         case START:
-            setState(ActionPanelState.SELECTED);
-            currentStudent = dataStudent;
-            setInputValues();
+            setStateSelected(dataStudent);
             break;
         case NEW:
-        case SELECTED:
             if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")
-                        && (isDataValid())) {
-                    updateDataStudent();
-                    currentStudent = dataStudent;
-                    dataManager.findStudentById(currentStudent.getID());
-                } else {
-                    dataManager.deselectTablePanel();
-                    if (currentStudent != null) {
-                        dataManager.findStudentById(currentStudent.getID());
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
+                    if (!tryToSave()) {
+                        dataManager.deselectTablePanel();
+                        return;
                     }
-                    cancel();
+                    setStateSelected(dataStudent);
+                } else {
+                    setStateSelected(dataStudent);
                 }
             } else {
-                currentStudent = dataStudent;
+                setStateSelected(dataStudent);
             }
-            setInputValues();
-            setState(ActionPanelState.SELECTED);
+            break;
+        case SELECTED:
+            if (isDirty) {
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
+                    if (!tryToSave()) {
+                        dataManager.findStudentById(currentStudent.getID());
+                        return;
+                    }
+                    setStateSelected(dataStudent);
+                } else {
+                    setStateSelected(dataStudent);
+                }
+            } else {
+                setStateSelected(dataStudent);
+            }
             break;
         default:
             fatalStateError(state);
         }
+    }
+
+    private void setStateSelected(DataStudent dataStudent) {
+        setState(ActionPanelState.SELECTED);
+        currentStudent = dataStudent;
+        setInputValues();
     }
 
     // TODO: what about user click load data from file when he is editing record
@@ -269,46 +284,35 @@ public class ActionPanel implements DataTableListener {
     }
 
     void createNew() {
-        // TODO: When create new then cancel selection in the table
-        dataManager.deselectTablePanel();
-        switch (state) {
-        case START:
-            setState(ActionPanelState.NEW);
-            break;
-        case SELECTED:
-            if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record ?") && isDataValid()) {
-                    updateDataStudent();
-                }
-            } else {
-                setState(ActionPanelState.NEW);
-            }
-            break;
-        default:
-            fatalStateError(state);
-        }
+        setState(ActionPanelState.NEW);
     }
 
     private void fatalStateError(ActionPanelState state) {
         throw new RuntimeException("Wrong action panel state '" + state.toString() + "'!");
     }
 
-    void save() {
+    boolean tryToSave() {
         if (isDataValid()) {
-            switch (state) {
-            case NEW:
-                dataManager.createStudent(nameTextValue.getText(), groupTextValue.getText(),
-                        taskSWTStatusCheckBox.getSelection(), -1);
-                break;
-            case SELECTED:
-                updateDataStudent();
-                break;
-            default:
-                fatalStateError(state);
-            }
-            setState(ActionPanelState.START);
+            save();
+            return true;
         }
+        return false;
+    }
 
+    private void save() {
+        switch (state) {
+        case NEW:
+            dataManager.createStudent(nameTextValue.getText(), groupTextValue.getText(),
+                    taskSWTStatusCheckBox.getSelection(), -1);
+            break;
+        case SELECTED:
+            dataManager.updateStudent(nameTextValue.getText(), groupTextValue.getText(),
+                    taskSWTStatusCheckBox.getSelection(), currentStudent.getID());
+
+            break;
+        default:
+            fatalStateError(state);
+        }
     }
 
     void delete() {
@@ -319,7 +323,7 @@ public class ActionPanel implements DataTableListener {
         }
     }
 
-    private void setState(ActionPanelState state) {
+    void setState(ActionPanelState state) {
         this.state = state;
         if (state == ActionPanelState.NEW) {
             clearFieldsAndSWTStatus();
@@ -345,22 +349,13 @@ public class ActionPanel implements DataTableListener {
     }
 
     void setLoadState() {
-        setState(ActionPanelState.NEW);
-        isDirty = false;
-        currentStudent = null;
+        setState(ActionPanelState.START);
     }
 
     private void clearFieldsAndSWTStatus() {
         nameTextValue.setText("");
         groupTextValue.setText("");
         taskSWTStatusCheckBox.setSelection(false);
-    }
-
-    private void updateDataStudent() {
-        if (currentStudent != null) {
-            dataManager.updateStudent(nameTextValue.getText(), groupTextValue.getText(),
-                    taskSWTStatusCheckBox.getSelection(), currentStudent.getID());
-        }
     }
 
     private boolean areTextFieldsEmpty() {

@@ -65,7 +65,7 @@ public class DataStudentManager {
         for (int i = 0; i < observers.size(); i++) {
             DataStudentListener observer = (DataStudentListener) observers.get(i);
             observer.deselectTable();
-        }      
+        }
     }
     
     public void notifyObserversOnCancelSelection(int id) {
