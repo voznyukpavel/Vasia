@@ -232,7 +232,6 @@ public class MainWindow extends ApplicationWindow {
     }
 
     private File createFileDialog(String action, int swtType) {
-        // TODO: file correct
         FileDialog fd = new FileDialog(getShell(), swtType);
         fd.setText(action);
         fd.setText("Open");

@@ -74,9 +74,6 @@ public class TablePanel implements DataStudentListener {
     @Override
     public void loaded() {
         setDataToTable();
-        TableItem[] tableItems = table.getItems();
-        table.setSelection(tableItems[0]);
-       clickOnTable();
     }
 
     
