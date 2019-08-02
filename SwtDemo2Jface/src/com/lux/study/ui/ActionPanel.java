@@ -195,7 +195,9 @@ public class ActionPanel implements DataTableListener {
         taskSWTStatusCheckBox.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 cancelButton.setEnabled(true);
-                // saveButton.setEnabled(!areTextFieldsEmpty() && isDataValid());
+                saveButton.setEnabled(true);
+              //  saveButton.setEnabled(!areTextFieldsEmpty() && isDataValid());
+                isDirty=true;
 
             }
         });
@@ -223,7 +225,6 @@ public class ActionPanel implements DataTableListener {
 
     @Override
     public void update(DataStudent dataStudent) {
-
         switch (state) {
         case START:
             setState(ActionPanelState.SELECTED);
@@ -232,20 +233,23 @@ public class ActionPanel implements DataTableListener {
             break;
         case NEW:
         case SELECTED:
-            if (isDirty
-                    && confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
-                if (isDataValid()) {
-                    updateDataStudent();
+            if (isDirty) {
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
+                    if (isDataValid()) {
+                        updateDataStudent();
+                        currentStudent = dataStudent;
+                    } else {
+                        // TODO: cancel selection
+                        dataManager.findStudentById(currentStudent.getID());
+                        cancel();
+                    }
                 } else {
-                    // TODO: cancel selection
                     dataManager.findStudentById(currentStudent.getID());
                     cancel();
                 }
-            } else {
-                dataManager.findStudentById(currentStudent.getID());
-                cancel();
-            }
-            currentStudent = dataStudent;
+            }else {
+                currentStudent = dataStudent;
+            }          
             setInputValues();
             setState(ActionPanelState.SELECTED);
             break;
