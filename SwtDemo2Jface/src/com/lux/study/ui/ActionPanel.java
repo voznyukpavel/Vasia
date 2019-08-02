@@ -195,19 +195,18 @@ public class ActionPanel implements DataTableListener {
         taskSWTStatusCheckBox.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 cancelButton.setEnabled(true);
-                saveButton.setEnabled(!areTextFieldsEmpty() && isDataValid());
+                // saveButton.setEnabled(!areTextFieldsEmpty() && isDataValid());
 
             }
         });
     }
 
-    
     private void signUpToTable() {
         dataTableManager.registerObserver(this);
     }
-    
+
     boolean isEnabledNewButton() {
-       return newButton.getEnabled();
+        return newButton.isEnabled();
     }
 
     boolean isEnabledSaveButton() {
@@ -224,6 +223,7 @@ public class ActionPanel implements DataTableListener {
 
     @Override
     public void update(DataStudent dataStudent) {
+
         switch (state) {
         case START:
             setState(ActionPanelState.SELECTED);
@@ -232,17 +232,22 @@ public class ActionPanel implements DataTableListener {
             break;
         case NEW:
         case SELECTED:
-            if (isDirty && confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
+            if (isDirty
+                    && confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
                 if (isDataValid()) {
                     updateDataStudent();
                 } else {
-                    // TODO: if data is not valid we should cancel new selection
-                    return;
+                    // TODO: cancel selection
+                    dataManager.findStudentById(currentStudent.getID());
+                    cancel();
                 }
-            } 
-            setState(ActionPanelState.SELECTED);
+            } else {
+                dataManager.findStudentById(currentStudent.getID());
+                cancel();
+            }
             currentStudent = dataStudent;
             setInputValues();
+            setState(ActionPanelState.SELECTED);
             break;
         default:
             fatalStateError(state);
@@ -258,6 +263,7 @@ public class ActionPanel implements DataTableListener {
 
     void createNew() {
         // TODO: When create new then cancel selection in the table
+        dataManager.deselectTablePanel();
         switch (state) {
         case START:
             setState(ActionPanelState.NEW);

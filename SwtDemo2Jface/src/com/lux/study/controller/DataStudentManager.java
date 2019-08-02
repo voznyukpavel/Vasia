@@ -1,5 +1,8 @@
 package com.lux.study.controller;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.lux.study.listener.DataStudentListener;
@@ -26,12 +29,12 @@ public class DataStudentManager {
         notifyObserversUpdate();
     }
 
-    public void saveDataStorageToFile(String path) {
-        DataFileManager.saveDataStorageToFile(path,DataStorage.getStudents());
+    public void saveDataStorageToFile(File file) throws IOException {
+        DataFileManager.saveDataStorageToFile(file,DataStorage.getStudents());
     }
     
-    public void getDataFromFileToDataStorage(String path) {
-        DataStorage.setStudents(DataFileManager.getDataFromFileToDataStorage(path));
+    public void getDataFromFileToDataStorage(File file) throws FileNotFoundException, IOException {
+        DataStorage.setStudents(DataFileManager.getDataFromFileToDataStorage(file));
         notifyObserversUpdate();
     }
 
@@ -49,6 +52,29 @@ public class DataStudentManager {
             DataStudentListener observer = (DataStudentListener) observers.get(i);
             observer.onUpdateDataStudent();
         }
+    }
+    
+    public void notifyObserversOnNew() {
+        for (int i = 0; i < observers.size(); i++) {
+            DataStudentListener observer = (DataStudentListener) observers.get(i);
+            observer.deselectTable();
+        }      
+    }
+    
+    public void notifyObserversOnCancelSelection(int id) {
+        for (int i = 0; i < observers.size(); i++) {
+            DataStudentListener observer = (DataStudentListener) observers.get(i);
+            observer.findRow(id);
+        }
+    }
+    
+
+    public void deselectTablePanel() {
+        notifyObserversOnNew();
+    }
+
+    public void findStudentById(int id) {
+        notifyObserversOnCancelSelection(id);
     }
 
 }

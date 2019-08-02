@@ -1,5 +1,11 @@
 package com.lux.study.ui;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -20,11 +26,18 @@ import org.eclipse.swt.widgets.FileDialog;
 
 import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.TableManager;
+import com.lux.study.util.DataFileManager;
 
 public class MainWindow extends ApplicationWindow {
 
     private static final int WINDOW_WIDTH = 770;
     private static final int WINDOW_HEIGHT = 300;
+
+    private final static Logger logger = Logger.getLogger(DataFileManager.class.getName());
+
+    private static final String MESSAGE_FILE_WRITE_ERROR = "Error occured while file were writing";
+    private static final String MESSAGE_FILE_READ_ERROR = "Error occured while file were reading";
+ //   private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
 
     private SashForm sashForm;
     private ActionPanel actionPanel;
@@ -64,7 +77,7 @@ public class MainWindow extends ApplicationWindow {
     private MenuManager createFileMenu() {
         MenuManager menu = new MenuManager("&File");
         menu.add(new SaveToFileAction());
-        menu.add(new LoadFromFileAction());
+        menu.add(new LoadFromFileAction(this));
         menu.add(new Separator());
         menu.add(new ExitAction(this));
 
@@ -86,7 +99,6 @@ public class MainWindow extends ApplicationWindow {
         menu.addMenuListener(new IMenuListener() {
             @Override
             public void menuAboutToShow(IMenuManager manager) {
-
                 newAction.setEnabled(actionPanel.isEnabledNewButton());
                 saveAction.setEnabled(actionPanel.isEnabledSaveButton());
                 deleteAction.setEnabled(actionPanel.isEnabledDeleteButton());
@@ -184,21 +196,54 @@ public class MainWindow extends ApplicationWindow {
         }
 
         public void run() {
-            String path = createFileDialog("Save", SWT.SAVE);
-            dataManager.saveDataStorageToFile(path);
+            File file = createFileDialog("Save", SWT.SAVE);
+            try {
+                if (file != null) {
+                    dataManager.saveDataStorageToFile(file);
+                }
+            } catch (IOException e) {
+                logger.log(Level.SEVERE,  MESSAGE_FILE_WRITE_ERROR + " ", e);
+            }
         }
     }
 
     private class LoadFromFileAction extends Action {
+        ApplicationWindow awin;
 
-        public LoadFromFileAction() {
+        public LoadFromFileAction(ApplicationWindow awin) {
             super("LoadFromFile", AS_PUSH_BUTTON);
+            this.awin = awin;
         }
-
         public void run() {
-            String path =createFileDialog("Open", SWT.OPEN);
-            dataManager.getDataFromFileToDataStorage(path);
+            File file = createFileDialog("Open", SWT.OPEN);
+            try {
+                System.out.println(file);
+                if (file != null) {
+                    dataManager.getDataFromFileToDataStorage(file);
+                }
+            } catch (FileNotFoundException e) {
+                MessageDialog.openError(awin.getShell(), "I/O Error",
+                        "File not found");
+            } catch (IOException e) {
+                logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR + " ", e);
+            }
         }
+    }
+
+    private File createFileDialog(String action, int swtType) {
+        //TODO: cancel
+        //TODO: file not found
+        //TODO: file correct
+        FileDialog fd = new FileDialog(getShell(), swtType);
+        fd.setText(action);
+        fd.setText("Open");
+        String[] filterExt = { "*.txt", "*.doc", ".rtf" };
+        fd.setFilterExtensions(filterExt);
+        File file = null;
+        if (fd.open() != null) {
+            file = new File(fd.getFilterPath() + "\\" + fd.getFileName());
+        }
+        return file;
     }
 
     private class AboutAction extends Action {
@@ -209,24 +254,9 @@ public class MainWindow extends ApplicationWindow {
             super("About", AS_PUSH_BUTTON);
             this.awin = awin;
         }
-
         public void run() {
             MessageDialog.openInformation(awin.getShell(), "About this program",
                     "The version of this application is 1.0");
         }
-    }
-    
-    private String createFileDialog(String action, int swtType) {
-        
-        FileDialog fd = new FileDialog(getShell(), swtType);
-        fd.setText(action);
-      //  fd.setFilterPath("C:/");
-      //  String[] filterExt = {FILE_NAME};
-       // fd.setFilterExtensions(filterExt);
-      //  System.out.println(fd.open());
-        // TODO: if press cancel
-        // TODO: check if file exists
-        // TODO: check if file correct
-        return  fd.open();
     }
 }

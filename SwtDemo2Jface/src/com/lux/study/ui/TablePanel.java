@@ -26,12 +26,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 
 import com.lux.study.controller.TableManager;
 import com.lux.study.listener.DataStudentListener;
 import com.lux.study.model.DataStudent;
 import com.lux.study.storage.DataStorage;
-
 
 public class TablePanel implements DataStudentListener {
 
@@ -66,6 +66,22 @@ public class TablePanel implements DataStudentListener {
         setDataToTable();
     }
 
+    @Override
+    public void deselectTable() {
+        table.deselectAll();
+    }
+
+    @Override
+    public void findRow(int row) {
+        TableItem[] tableItems = table.getItems();
+        for(int i=0;i<tableItems.length;i++) {
+            if(Integer.parseInt(tableItems[i].getText(0))==row) {
+                table.setSelection(tableItems[i]);
+                break;
+            }
+        }
+    }
+
     private void setDataToTable() {
         tableViever.setInput(DataStorage.getData());
         tableViever.refresh();
@@ -78,7 +94,8 @@ public class TablePanel implements DataStudentListener {
         tableComposite = new Composite(parentComposite, SWT.BORDER);
         tableComposite.setLayout(tableGridLayout);
 
-        tableViever = new TableViewer(tableComposite,SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+        tableViever = new TableViewer(tableComposite,
+                SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
         tableViever.setContentProvider(ArrayContentProvider.getInstance());
         tableViever.setComparator(comparator);
 
@@ -138,7 +155,7 @@ public class TablePanel implements DataStudentListener {
     private void clickOnTable() {
         DataStudent selection = (DataStudent) ((IStructuredSelection) tableViever.getSelection()).getFirstElement();
         if (selection != null) {
-           
+
             tableManager.tableSelectionChanged(selection);
         }
     }
@@ -252,4 +269,5 @@ public class TablePanel implements DataStudentListener {
             return rc;
         }
     }
+
 }
