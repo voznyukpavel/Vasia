@@ -37,7 +37,7 @@ public class MainWindow extends ApplicationWindow {
 
     private static final String MESSAGE_FILE_WRITE_ERROR = "Error occured while file were writing";
     private static final String MESSAGE_FILE_READ_ERROR = "Error occured while file were reading";
- //   private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
+    // private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
 
     private SashForm sashForm;
     private ActionPanel actionPanel;
@@ -192,7 +192,7 @@ public class MainWindow extends ApplicationWindow {
     private class SaveToFileAction extends Action {
 
         public SaveToFileAction() {
-            super("SaveToFile", AS_PUSH_BUTTON);
+            super("Save to file", AS_PUSH_BUTTON);
         }
 
         public void run() {
@@ -202,7 +202,7 @@ public class MainWindow extends ApplicationWindow {
                     dataManager.saveDataStorageToFile(file);
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE,  MESSAGE_FILE_WRITE_ERROR + " ", e);
+                logger.log(Level.SEVERE, MESSAGE_FILE_WRITE_ERROR + " ", e);
             }
         }
     }
@@ -211,9 +211,10 @@ public class MainWindow extends ApplicationWindow {
         ApplicationWindow awin;
 
         public LoadFromFileAction(ApplicationWindow awin) {
-            super("LoadFromFile", AS_PUSH_BUTTON);
+            super("Load from file", AS_PUSH_BUTTON);
             this.awin = awin;
         }
+
         public void run() {
             File file = createFileDialog("Open", SWT.OPEN);
             try {
@@ -222,8 +223,7 @@ public class MainWindow extends ApplicationWindow {
                     dataManager.getDataFromFileToDataStorage(file);
                 }
             } catch (FileNotFoundException e) {
-                MessageDialog.openError(awin.getShell(), "I/O Error",
-                        "File not found");
+                MessageDialog.openError(awin.getShell(), "I/O Error", "File not found");
             } catch (IOException e) {
                 logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR + " ", e);
             }
@@ -231,13 +231,11 @@ public class MainWindow extends ApplicationWindow {
     }
 
     private File createFileDialog(String action, int swtType) {
-        //TODO: cancel
-        //TODO: file not found
-        //TODO: file correct
+        // TODO: file correct
         FileDialog fd = new FileDialog(getShell(), swtType);
         fd.setText(action);
         fd.setText("Open");
-        String[] filterExt = { "*.txt", "*.doc", ".rtf" };
+        String[] filterExt = { "*.txt", "*.*" };
         fd.setFilterExtensions(filterExt);
         File file = null;
         if (fd.open() != null) {
@@ -254,6 +252,7 @@ public class MainWindow extends ApplicationWindow {
             super("About", AS_PUSH_BUTTON);
             this.awin = awin;
         }
+
         public void run() {
             MessageDialog.openInformation(awin.getShell(), "About this program",
                     "The version of this application is 1.0");
