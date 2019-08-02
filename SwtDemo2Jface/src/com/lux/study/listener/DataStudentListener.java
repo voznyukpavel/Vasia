@@ -6,7 +6,6 @@ public interface DataStudentListener {
     
     public void deselectTable();
 
-
     public void findRow(int id);
 
 }

@@ -33,7 +33,7 @@ public class DataStudentManager {
         DataFileManager.saveDataStorageToFile(file,DataStorage.getStudents());
     }
     
-    public void getDataFromFileToDataStorage(File file) throws FileNotFoundException, IOException {
+    public void getDataFromFileToDataStorage(File file) throws FileNotFoundException, Exception {
         DataStorage.setStudents(DataFileManager.getDataFromFileToDataStorage(file));
         notifyObserversUpdate();
     }

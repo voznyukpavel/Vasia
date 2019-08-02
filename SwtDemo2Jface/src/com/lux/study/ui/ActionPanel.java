@@ -277,6 +277,8 @@ public class ActionPanel implements DataTableListener {
                 setState(ActionPanelState.NEW);
             }
             break;
+     //   case NEW:
+  //          break;
         default:
             fatalStateError(state);
         }
@@ -327,6 +329,8 @@ public class ActionPanel implements DataTableListener {
             break;
         case SELECTED:
             setInputValues();
+            break;
+        case START:
             break;
         default:
             fatalStateError(state);

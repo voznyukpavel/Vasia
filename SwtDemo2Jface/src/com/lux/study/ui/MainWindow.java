@@ -37,7 +37,7 @@ public class MainWindow extends ApplicationWindow {
 
     private static final String MESSAGE_FILE_WRITE_ERROR = "Error occured while file were writing";
     private static final String MESSAGE_FILE_READ_ERROR = "Error occured while file were reading";
-    // private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
+     private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
 
     private SashForm sashForm;
     private ActionPanel actionPanel;
@@ -221,11 +221,12 @@ public class MainWindow extends ApplicationWindow {
                 System.out.println(file);
                 if (file != null) {
                     dataManager.getDataFromFileToDataStorage(file);
+                    actionPanel.cancel();
                 }
             } catch (FileNotFoundException e) {
-                MessageDialog.openError(awin.getShell(), "I/O Error", "File not found");
-            } catch (IOException e) {
-                logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR + " ", e);
+                MessageDialog.openError(awin.getShell(), "I/O Error", MESSAGE_FILE_NOT_FOUND_ERROR);
+            } catch (Exception e) {
+                MessageDialog.openError(awin.getShell(), "I/O Error", MESSAGE_FILE_READ_ERROR);
             }
         }
     }

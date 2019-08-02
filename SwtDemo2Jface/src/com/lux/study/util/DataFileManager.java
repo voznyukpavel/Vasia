@@ -17,13 +17,13 @@ public class DataFileManager {
 
     public static void saveDataStorageToFile(File file, Map<Integer, DataStudent> map) throws IOException {
         byte buf[] = readDataFromDataStorage(map).getBytes();
-        try (OutputStream out = new FileOutputStream(file + ".txt")) {
+        try (OutputStream out = new FileOutputStream(file )) {
             out.write(buf);
         }
     }
 
     public static Map<Integer, DataStudent> getDataFromFileToDataStorage(File file)
-            throws FileNotFoundException, IOException {
+            throws FileNotFoundException, Exception {
 
         Map<Integer, DataStudent> map = new HashMap<Integer, DataStudent>();
         String data = "";
@@ -34,7 +34,6 @@ public class DataFileManager {
             }
         }
         return map;
-        // TODO: state after load data
     }
 
     private static DataStudent deserializeData(String data) {
