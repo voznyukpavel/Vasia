@@ -196,8 +196,8 @@ public class ActionPanel implements DataTableListener {
             public void widgetSelected(SelectionEvent e) {
                 cancelButton.setEnabled(true);
                 saveButton.setEnabled(true);
-              //  saveButton.setEnabled(!areTextFieldsEmpty() && isDataValid());
-                isDirty=true;
+                // saveButton.setEnabled(!areTextFieldsEmpty() && isDataValid());
+                isDirty = true;
 
             }
         });
@@ -234,22 +234,17 @@ public class ActionPanel implements DataTableListener {
         case NEW:
         case SELECTED:
             if (isDirty) {
-                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
-                    if (isDataValid()) {
-                        updateDataStudent();
-                        currentStudent = dataStudent;
-                    } else {
-                        // TODO: cancel selection
-                        dataManager.findStudentById(currentStudent.getID());
-                        cancel();
-                    }
+                if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")
+                        && (isDataValid())) {
+                    updateDataStudent();
+                    currentStudent = dataStudent;
                 } else {
                     dataManager.findStudentById(currentStudent.getID());
                     cancel();
                 }
-            }else {
+            } else {
                 currentStudent = dataStudent;
-            }          
+            }
             setInputValues();
             setState(ActionPanelState.SELECTED);
             break;
