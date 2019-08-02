@@ -240,6 +240,7 @@ public class ActionPanel implements DataTableListener {
                     currentStudent = dataStudent;
                     dataManager.findStudentById(currentStudent.getID());
                 } else {
+                    // TODO: You know
                     if (currentStudent != null) {
                         dataManager.findStudentById(currentStudent.getID());
                     }
@@ -255,6 +256,8 @@ public class ActionPanel implements DataTableListener {
             fatalStateError(state);
         }
     }
+
+    // TODO: what about user click load data from file when he is editing record
 
     private void setInputValues() {
         if (currentStudent != null) {
