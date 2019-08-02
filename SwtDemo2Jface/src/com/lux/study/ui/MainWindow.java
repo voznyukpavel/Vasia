@@ -218,10 +218,10 @@ public class MainWindow extends ApplicationWindow {
         public void run() {
             File file = createFileDialog("Open", SWT.OPEN);
             try {
-                System.out.println(file);
+            //    System.out.println(file);
                 if (file != null) {
                     dataManager.getDataFromFileToDataStorage(file);
-                 //   actionPanel.setLoadState();
+                    actionPanel.setLoadState();
                 }
             } catch (FileNotFoundException e) {
                 MessageDialog.openError(awin.getShell(), "I/O Error", MESSAGE_FILE_NOT_FOUND_ERROR);
