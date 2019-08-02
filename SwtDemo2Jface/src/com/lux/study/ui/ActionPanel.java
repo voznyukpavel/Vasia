@@ -240,9 +240,7 @@ public class ActionPanel implements DataTableListener {
                     currentStudent = dataStudent;
                     dataManager.findStudentById(currentStudent.getID());
                 } else {
-                    dataManager.deselectTablePanel();
                     if (currentStudent != null) {
-                      
                         dataManager.findStudentById(currentStudent.getID());
                     }
                     cancel();
@@ -343,11 +341,10 @@ public class ActionPanel implements DataTableListener {
         } 
 
     }
-    void setLoadState() {
-        setState(ActionPanelState.NEW);
-        isDirty=false;
-        currentStudent=null;
-    }
+  //  void setLoadState() {
+//        setState(ActionPanelState.START);
+ //       currentStudent=null;
+ //   }
 
     private void clearFieldsAndSWTStatus() {
         nameTextValue.setText("");
