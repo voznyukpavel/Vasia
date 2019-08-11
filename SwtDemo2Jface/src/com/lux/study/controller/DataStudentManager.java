@@ -47,28 +47,28 @@ public class DataStudentManager {
         observers.add(observer);
     }
     
-    public void notifyObserversLoaded() {
+    private void notifyObserversLoaded() {
         for (int i = 0; i < observers.size(); i++) {
             DataStudentListener observer = (DataStudentListener) observers.get(i);
             observer.loaded();
         }
     }
 
-    public void notifyObserversUpdate() {
+    private void notifyObserversUpdate() {
         for (int i = 0; i < observers.size(); i++) {
             DataStudentListener observer = (DataStudentListener) observers.get(i);
             observer.onUpdateDataStudent();
         }
     }
     
-    public void notifyObserversOnNew() {
+    private void notifyObserversOnNew() {
         for (int i = 0; i < observers.size(); i++) {
             DataStudentListener observer = (DataStudentListener) observers.get(i);
             observer.deselectTable();
         }
     }
     
-    public void notifyObserversOnCancelSelection(int id) {
+    private void notifyObserversOnCancelSelection(int id) {
         for (int i = 0; i < observers.size(); i++) {
             DataStudentListener observer = (DataStudentListener) observers.get(i);
             observer.findRow(id);

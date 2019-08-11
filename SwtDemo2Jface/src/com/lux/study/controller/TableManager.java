@@ -20,7 +20,7 @@ public class TableManager {
         notifyObservers(dataStudent);
     }
 
-    public void notifyObservers(DataStudent dataStudent) {
+    private void notifyObservers(DataStudent dataStudent) {
         for (int i = 0; i < observers.size(); i++) {
             DataTableListener observer = (DataTableListener) observers.get(i);
             observer.update(dataStudent);

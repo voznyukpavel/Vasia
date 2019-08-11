@@ -105,7 +105,7 @@ public class TablePanel implements DataStudentListener {
         tableViever.setContentProvider(ArrayContentProvider.getInstance());
         tableViever.setComparator(comparator);
 
-        createTextColumn(0, 50);
+        createTextColumn(0, 80);
         createTextColumn(1, 100);
         createTextColumn(2, 100);
         createImageColumn(3, 70);
@@ -275,8 +275,4 @@ public class TablePanel implements DataStudentListener {
             return rc;
         }
     }
-
-
-
-
 }
