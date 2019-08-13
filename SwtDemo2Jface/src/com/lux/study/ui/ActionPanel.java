@@ -37,7 +37,7 @@ public class ActionPanel implements DataTableListener {
 	private TableManager dataTableManager;
 	private MainWindow mainWindow;
 
-	private int idTemporratyStudent = -1;
+
 	private DataStudent currentStudent;
 	private ActionPanelState state = ActionPanelState.START;
 	private boolean isDirty;

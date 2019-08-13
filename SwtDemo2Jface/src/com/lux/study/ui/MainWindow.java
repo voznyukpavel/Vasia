@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.FileDialog;
 
 import com.lux.study.controller.DataStudentManager;
 import com.lux.study.controller.TableManager;
-import com.lux.study.util.DataFileManager;
 
 public class MainWindow extends ApplicationWindow {
 
