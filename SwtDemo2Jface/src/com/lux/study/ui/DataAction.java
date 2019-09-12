@@ -5,7 +5,13 @@ public enum DataAction {
     NEW("New"),
     SAVE("Save"),
     DELETE("Delete"),
-    CANCEL("Cancel");
+    CANCEL("Cancel"),
+    
+    ABOUT("About"),
+    
+    LOAD_FROM_FILE("Load from file"),
+    SAVE_TO_FILE("Save to file"),
+	EXIT("Exit");
 
     private String name;
 

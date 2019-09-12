@@ -23,10 +23,18 @@ import com.lux.study.model.DataStudent;
 import com.lux.study.util.TextChecker;
 
 public class ActionPanel implements DataTableListener {
-
-	private static final String NAME = "Name";
+	
+	private static final String ARE_YOU_SHURE_YOU_WANT_TO_DELETE="Are you surre, you want to delete current student: ";
+	private static final String CONFIRM_CHANGES="Confirm changes";
+	private static final String EMPTY_DATA="Empty data";
+	private static final String ERROR="Error";
+	private static final String DELETE ="Delete";
+	private static final String DO_YOU_WANT_TO_SAVE_CURRENT_RECORD= "Do you want to save changes of current record before create new?";
 	private static final String GROUP = "Group";
+	private static final String NAME = "Name";
 	private static final String SWT_TASK_DONE = "SWT task done";
+	private static final String WRONG_ACTION_PANEL_STATE="Wrong action panel state '";
+	private static final String WRONG_DATA="Wrong data";
 
 	private Composite inputDataComposite;
 	private Label nameLabelTitle, groupLabelTitle, taskSWTStatusLabel;
@@ -233,7 +241,7 @@ public class ActionPanel implements DataTableListener {
 			break;
 		case NEW:
 			if (!areTextFieldsEmpty() && isDirty) {
-				if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
+				if (confirmDialog(CONFIRM_CHANGES, DO_YOU_WANT_TO_SAVE_CURRENT_RECORD)) {
 					if (!tryToSave()) {
 						dataManager.deselectTablePanel();
 						return;
@@ -249,7 +257,7 @@ public class ActionPanel implements DataTableListener {
 			break;
 		case SELECTED:
 			if (isDirty) {
-				if (confirmDialog("Lab #2", "Do you want to save changes of current record before create new?")) {
+				if (confirmDialog(CONFIRM_CHANGES, DO_YOU_WANT_TO_SAVE_CURRENT_RECORD)) {
 					if (!tryToSave()) {
 						dataManager.findStudentById(currentStudent.getID());
 						return;
@@ -288,7 +296,7 @@ public class ActionPanel implements DataTableListener {
 	}
 
 	private void fatalStateError(ActionPanelState state) {
-		throw new RuntimeException("Wrong action panel state '" + state.toString() + "'!");
+		throw new RuntimeException(WRONG_ACTION_PANEL_STATE + state.toString() + "'!");
 	}
 
 	boolean tryToSave() {
@@ -315,8 +323,8 @@ public class ActionPanel implements DataTableListener {
 	}
 
 	void delete() {
-		if (confirmDialog("Delete",
-				"Are you surre, you want to delete current student: " + currentStudent.getName() + " ?")) {
+		if (confirmDialog(DELETE,
+				ARE_YOU_SHURE_YOU_WANT_TO_DELETE + currentStudent.getName() + " ?")) {
 			dataManager.deleteStudent(currentStudent.getID());
 			setState(ActionPanelState.START);
 		}
@@ -368,11 +376,11 @@ public class ActionPanel implements DataTableListener {
 
 	private boolean isDataValid() {
 		if (areTextFieldsEmpty()) {
-			MessageDialog.openError(mainWindow.getShell(), "Error", "Empty data");
+			MessageDialog.openError(mainWindow.getShell(), ERROR, EMPTY_DATA);
 			return false;
 		}
 		if (!TextChecker.nameChecker(nameTextValue.getText()) && TextChecker.groupChecker(groupTextValue.getText())) {
-			MessageDialog.openError(mainWindow.getShell(), "Error", "Wrong data");
+			MessageDialog.openError(mainWindow.getShell(), ERROR, WRONG_DATA);
 			return false;
 		}
 		return true;

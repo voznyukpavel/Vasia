@@ -34,9 +34,16 @@ public class MainWindow extends ApplicationWindow {
 
 	private final static Logger logger = Logger.getLogger(MainWindow.class.getName());
 
-	private static final String MESSAGE_FILE_WRITE_ERROR = "Error occured while file were writing";
-	private static final String MESSAGE_FILE_READ_ERROR = "Error occured while file were reading";
+	private static final String ABOUT_THIS_PROGRAM="About this program";
+	private static final String ARE_YOU_SHURE="Are you surre?";
+	private static final String IOERROR="I/O Error";
 	private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
+	private static final String MESSAGE_FILE_READ_ERROR = "Error occured while file were reading";
+	private static final String MESSAGE_FILE_WRITE_ERROR = "Error occured while file were writing";
+	private static final String OPEN="Open";
+	private static final String SAVE="Save";
+	private static final String SHELL_TITLE="Vasia";
+	private static final String THE_VERSION_OF_THIS_APPLICATION="The version of this application is 1.0";
 
 	private SashForm sashForm;
 	private ActionPanel actionPanel;
@@ -114,7 +121,7 @@ public class MainWindow extends ApplicationWindow {
 	}
 
 	private void shellSets() {
-		getShell().setText("Vasia");
+		getShell().setText(SHELL_TITLE);
 		getShell().setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		getShell().setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
@@ -129,7 +136,7 @@ public class MainWindow extends ApplicationWindow {
 	private class CancelAction extends Action {
 
 		public CancelAction() {
-			super("Cancel", AS_PUSH_BUTTON);
+			super(DataAction.CANCEL.getName(), AS_PUSH_BUTTON);
 		}
 
 		public void run() {
@@ -141,7 +148,7 @@ public class MainWindow extends ApplicationWindow {
 	private class DeleteAction extends Action {
 
 		public DeleteAction() {
-			super("Delete", AS_PUSH_BUTTON);
+			super(DataAction.DELETE.getName(), AS_PUSH_BUTTON);
 
 		}
 
@@ -153,7 +160,7 @@ public class MainWindow extends ApplicationWindow {
 	private class NewAction extends Action {
 
 		public NewAction() {
-			super("New", AS_PUSH_BUTTON);
+			super(DataAction.NEW.getName(), AS_PUSH_BUTTON);
 		}
 
 		public void run() {
@@ -164,7 +171,7 @@ public class MainWindow extends ApplicationWindow {
 	private class SaveAction extends Action {
 
 		public SaveAction() {
-			super("Save", AS_PUSH_BUTTON);
+			super(DataAction.SAVE.getName(), AS_PUSH_BUTTON);
 		}
 
 		public void run() {
@@ -184,7 +191,7 @@ public class MainWindow extends ApplicationWindow {
 		}
 
 		public void run() {
-			if (MessageDialog.openConfirm(awin.getShell(), "Exit", "Are you surre?")) {
+			if (MessageDialog.openConfirm(awin.getShell(), DataAction.EXIT.getName(), ARE_YOU_SHURE)) {
 				awin.close();
 			}
 		}
@@ -193,11 +200,11 @@ public class MainWindow extends ApplicationWindow {
 	private class SaveToFileAction extends Action {
 
 		public SaveToFileAction() {
-			super("Save to file", AS_PUSH_BUTTON);
+			super(DataAction.SAVE_TO_FILE.getName(), AS_PUSH_BUTTON);
 		}
 
 		public void run() {
-			File file = createFileDialog("Save", SWT.SAVE);
+			File file = createFileDialog(SAVE, SWT.SAVE);
 			try {
 				if (file != null) {
 					dataManager.saveDataStorageToFile(file);
@@ -212,21 +219,21 @@ public class MainWindow extends ApplicationWindow {
 		ApplicationWindow awin;
 
 		public LoadFromFileAction(ApplicationWindow awin) {
-			super("Load from file", AS_PUSH_BUTTON);
+			super(DataAction.LOAD_FROM_FILE.getName(), AS_PUSH_BUTTON);
 			this.awin = awin;
 		}
 
 		public void run() {
-			File file = createFileDialog("Open", SWT.OPEN);
+			File file = createFileDialog(OPEN, SWT.OPEN);
 			try {
 				if (file != null) {
 					dataManager.getDataFromFileToDataStorage(file);
 					actionPanel.setLoadState();
 				}
 			} catch (FileNotFoundException e) {
-				MessageDialog.openError(awin.getShell(), "I/O Error", MESSAGE_FILE_NOT_FOUND_ERROR);
+				MessageDialog.openError(awin.getShell(), IOERROR, MESSAGE_FILE_NOT_FOUND_ERROR);
 			} catch (Exception e) {
-				MessageDialog.openError(awin.getShell(), "I/O Error", MESSAGE_FILE_READ_ERROR);
+				MessageDialog.openError(awin.getShell(), IOERROR, MESSAGE_FILE_READ_ERROR);
 			}
 		}
 	}
@@ -234,7 +241,7 @@ public class MainWindow extends ApplicationWindow {
 	private File createFileDialog(String action, int swtType) {
 		FileDialog fd = new FileDialog(getShell(), swtType);
 		fd.setText(action);
-		fd.setText("Open");
+		fd.setText(OPEN);
 		String[] filterExt = { "*.txt", "*.*" };
 		fd.setFilterExtensions(filterExt);
 		File file = null;
@@ -249,13 +256,13 @@ public class MainWindow extends ApplicationWindow {
 		ApplicationWindow awin;
 
 		public AboutAction(ApplicationWindow awin) {
-			super("About", AS_PUSH_BUTTON);
+			super(DataAction.ABOUT.getName(), AS_PUSH_BUTTON);
 			this.awin = awin;
 		}
 
 		public void run() {
-			MessageDialog.openInformation(awin.getShell(), "About this program",
-					"The version of this application is 1.0");
+			MessageDialog.openInformation(awin.getShell(), ABOUT_THIS_PROGRAM,
+					THE_VERSION_OF_THIS_APPLICATION);
 		}
 	}
 }
