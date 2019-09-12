@@ -214,23 +214,25 @@ public class TablePanel implements DataStudentListener {
             Image image = null;
             if (index == 3) {
                 if (datastudent.isSWTDOne()) {
-                    try {
-                        image = new Image(Display.getCurrent(), (new FileInputStream("./source/CHECKED.png")));
-                    } catch (FileNotFoundException e) {
-                        logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
-                    }
+                    image = getImage(image,"./source/CHECKED.png");
                 } else {
-                    try {
-                        image = new Image(Display.getCurrent(), (new FileInputStream("./source/UCHECKED.png")));
-                    } catch (FileNotFoundException e) {
-                        logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
-                    }
+                    image = getImage(image,"./source/UCHECKED.png");
                 }
             }
             return image;
         }
-    }
 
+        private Image getImage(Image image,String source) {
+            try {
+                image = new Image(Display.getCurrent(), (new FileInputStream(source)));
+            } catch (FileNotFoundException e) {
+                logger.log(Level.SEVERE, MESSAGE_FILE_READ_ERROR, e);
+            }
+            return image;
+        }
+
+    }
+   
     private class DataStudentsComparator extends ViewerComparator {
         private static final int DESCENDING = 1;
         private int direction = DESCENDING;
