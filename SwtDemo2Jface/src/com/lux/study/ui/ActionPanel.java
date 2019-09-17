@@ -45,7 +45,6 @@ public class ActionPanel implements DataTableListener {
 	private TableManager dataTableManager;
 	private MainWindow mainWindow;
 
-
 	private DataStudent currentStudent;
 	private ActionPanelState state = ActionPanelState.START;
 	private boolean isDirty;
@@ -246,7 +245,7 @@ public class ActionPanel implements DataTableListener {
 						dataManager.deselectTablePanel();
 						return;
 					}
-					dataStudent=createNewStudent();
+					dataStudent = createNewStudent();
 					setStateSelected(dataStudent);
 				} else {
 					setStateSelected(dataStudent);

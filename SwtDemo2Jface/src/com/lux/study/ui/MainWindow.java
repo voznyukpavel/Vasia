@@ -11,14 +11,10 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-
 import org.eclipse.jface.window.ApplicationWindow;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -37,9 +33,9 @@ public class MainWindow extends ApplicationWindow {
 	private static final String ABOUT_THIS_PROGRAM="About this program";
 	private static final String ARE_YOU_SHURE="Are you surre?";
 	private static final String IOERROR="I/O Error";
+	private static final String MESSAGE_FILE_READ_ERROR =      "Error occured while file were reading";
+	private static final String MESSAGE_FILE_WRITE_ERROR =     "Error occured while file were writing";
 	private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
-	private static final String MESSAGE_FILE_READ_ERROR = "Error occured while file were reading";
-	private static final String MESSAGE_FILE_WRITE_ERROR = "Error occured while file were writing";
 	private static final String OPEN="Open";
 	private static final String SAVE="Save";
 	private static final String SHELL_TITLE="Vasia";
