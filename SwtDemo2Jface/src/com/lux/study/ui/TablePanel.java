@@ -234,6 +234,7 @@ public class TablePanel implements DataStudentListener {
     }
    
     private class DataStudentsComparator extends ViewerComparator {
+        
         private static final int DESCENDING = 1;
         private int direction = DESCENDING;
         private int propertyIndex;
