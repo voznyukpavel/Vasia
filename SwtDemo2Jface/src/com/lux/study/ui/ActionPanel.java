@@ -24,7 +24,7 @@ import com.lux.study.util.TextChecker;
 
 public class ActionPanel implements DataTableListener {
 	
-	private static final String ARE_YOU_SHURE_YOU_WANT_TO_DELETE="Are you surre, you want to delete current student: ";
+	private static final String ARE_YOU_SHURE_YOU_WANT_TO_DELETE="Are you sure, you want to delete current student: ";
 	private static final String CONFIRM_CHANGES="Confirm changes";
 	private static final String EMPTY_DATA="Empty data";
 	private static final String ERROR="Error";

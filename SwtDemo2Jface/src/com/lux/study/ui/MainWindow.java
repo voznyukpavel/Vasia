@@ -31,10 +31,10 @@ public class MainWindow extends ApplicationWindow {
 	private final static Logger logger = Logger.getLogger(MainWindow.class.getName());
 
 	private static final String ABOUT_THIS_PROGRAM="About this program";
-	private static final String ARE_YOU_SHURE="Are you surre?";
+	private static final String ARE_YOU_SHURE="Are you sure?";
 	private static final String IOERROR="I/O Error";
-	private static final String MESSAGE_FILE_READ_ERROR =      "Error occured while file were reading";
-	private static final String MESSAGE_FILE_WRITE_ERROR =     "Error occured while file were writing";
+	private static final String MESSAGE_FILE_READ_ERROR =      "Error occured while file was reading";
+	private static final String MESSAGE_FILE_WRITE_ERROR =     "Error occured while file was writing";
 	private static final String MESSAGE_FILE_NOT_FOUND_ERROR = "File not found";
 	private static final String OPEN="Open";
 	private static final String SAVE="Save";
